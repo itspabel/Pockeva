@@ -7,7 +7,7 @@
 **An offline-first personal finance app for Android.**
 
 [![Release](https://img.shields.io/badge/Release-v1-8B5CF6)](https://github.com/itspabel/Pockeva/releases/tag/v1)
-[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](#installation)
 
 [Download Pockeva](https://github.com/itspabel/Pockeva/releases/tag/v1) · [Report a Bug](https://github.com/itspabel/Pockeva/issues)
@@ -86,7 +86,7 @@ Only install APK files from sources you trust.
 
 ## Privacy
 
-According to the in-app Privacy Policy provided for this project, Pockeva:
+Pockeva:
 
 - Is designed to operate without an internet connection.
 - Stores supported financial records, categories, budget calculations, and shopping lists in a local SQLite database in the app's internal storage.
@@ -121,13 +121,19 @@ When reporting a bug, include:
 
 Do not post passwords, financial account credentials, or private backup files in public issues.
 
-## Security
 
-Avoid publishing sensitive information in public issue reports. If you discover a security vulnerability, contact the project maintainer through an appropriate private channel rather than publishing exploit details.
+## Copyright & License
 
-## License
+Copyright © 2026 Pockeva. All rights reserved.
 
-Pockeva is licensed under the [Apache License 2.0](LICENSE).
+Pockeva, including its application package (APK), branding, logos, graphics, and associated project materials, is proprietary software.
+
+No permission is granted to copy, modify, redistribute, reverse engineer, or create derivative works from these materials, except where applicable law expressly permits or the copyright owner provides prior written permission.
+
+For licensing or redistribution inquiries, please contact the copyright owner.
+
+This repository does not grant an open-source license.
+
 
 ## Disclaimer
 
