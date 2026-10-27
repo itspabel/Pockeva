@@ -6,11 +6,11 @@
 
 **An offline-first personal finance app for Android.**
 
-[![Release](https://img.shields.io/badge/Release-v1.0.2-8B5CF6)](https://github.com/itspabel/Pockeva/releases/tag/v1)
+[![Release](https://img.shields.io/badge/Release-v1.0.3-8B5CF6)]([https://github.com/itspabel/Pockeva/releases/tag/v1](https://github.com/itspabel/Pockeva/releases/download/v1.0.3/Pockeva-v1.0.3-universal.apk))
 
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](#installation)
 
-[Download Pockeva](https://github.com/itspabel/Pockeva/releases/tag/v1) · [Report a Bug](https://github.com/itspabel/Pockeva/issues)
+[Download Pockeva](https://github.com/itspabel/Pockeva/releases/download/v1.0.3/Pockeva-v1.0.3-universal.apk) · [Report a Bug](https://github.com/itspabel/Pockeva/issues)
 
 </div>
 
@@ -76,7 +76,7 @@ Designed for offline use, Pockeva stores supported financial records locally on 
 
 ## Installation
 
-1. Visit the [Pockeva v1.0.2 release page](https://github.com/itspabel/Pockeva/releases/tag/v1).
+1. Visit the [Pockeva v1.0.3 release page](https://github.com/itspabel/Pockeva/releases/tag/v1.0.3).
 2. Download the APK from the release assets.
 3. Open the APK on your Android device.
 4. If prompted, allow installation from the source used to download the APK.
@@ -145,6 +145,6 @@ Pockeva is a personal finance record-keeping tool. It is not a bank, payment pro
 
 **Pockeva — Your money, in balance.**
 
-[Download the Latest Release](https://github.com/itspabel/Pockeva/releases/tag/v1) · [GitHub Repository](https://github.com/itspabel/Pockeva)
+[Download the Latest Release](https://github.com/itspabel/Pockeva/releases/tag/v1.0.3) · [GitHub Repository](https://github.com/itspabel/Pockeva)
 
 </div>
