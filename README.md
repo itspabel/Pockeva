@@ -6,7 +6,7 @@
 
 **An offline-first personal finance app for Android.**
 
-[![Release](https://img.shields.io/badge/Release-v1.0.3-8B5CF6)]([https://github.com/itspabel/Pockeva/releases/tag/v1](https://github.com/itspabel/Pockeva/releases/download/v1.0.3/Pockeva-v1.0.3-universal.apk))
+[![Release](https://img.shields.io/badge/Release-v1.0.3-8B5CF6)](https://github.com/itspabel/Pockeva/releases/tag/v1.0.3)
 
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](#installation)
 
