@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pockeva — Your money, in balance.</title>
+  <meta name="description" content="Pockeva is an offline-first personal finance app for Android. Track income, expenses, wallets, shopping lists and borrowing — all in one organized place, stored on your device." />
+  <link rel="canonical" href="https://itspabel.github.io/Pockeva/" />
+  <meta name="theme-color" content="#08070d" id="theme-color-meta" />
+  <meta name="color-scheme" content="dark light" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pockeva" />
+  <meta property="og:title" content="Pockeva — Your money, in balance." />
+  <meta property="og:description" content="An offline-first personal finance app for Android. Track income, expenses, wallets, shopping lists and borrowing in one organized place." />
+  <meta property="og:url" content="https://itspabel.github.io/Pockeva/og.png" />
+  <!-- Add an absolute og:image URL here once a social preview image is available. -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Pockeva — Your money, in balance." />
+  <meta name="twitter:description" content="An offline-first personal finance app for Android." />
+
+  <link rel="icon" href="./favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="./icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    /* Runs before paint: avoids a theme flash and enables JS-only styling. */
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      try {
+        var saved = localStorage.getItem('pockeva-theme');
+        if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+      } catch (e) { /* storage may be blocked — keep the default */ }
+    })();
+  </script>
+
+  <style>
+    /* ==========================================================================
+       1. Design tokens
+       ========================================================================== */
+    :root {
+      --max: 1180px;
+      --header-h: 72px;
+      --radius-sm: 12px;
+      --radius: 18px;
+      --radius-lg: 26px;
+
+      --purple: #8b5cf6;
+      --violet: #a78bfa;
+      --magenta: #e879f9;
+      --green: #34d399;
+      --red: #fb7185;
+
+      --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-display: "Sora", "Inter", ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+
+      --bg: #08070d;
+      --bg-2: #0c0a14;
+      --bg-3: #110e1d;
+      --surface: rgba(255, 255, 255, 0.045);
+      --surface-solid: #12101b;
+      --surface-2: #171326;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f5f2fc;
+      --text-2: #cfc9e0;
+      --muted: #9d97b3;
+      --header-bg: rgba(8, 7, 13, 0.74);
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+      --glow: 0 0 0 1px rgba(167, 139, 250, 0.12), 0 18px 50px rgba(109, 40, 217, 0.22);
+
+      --page-glow:
+        radial-gradient(1200px 620px at 82% -10%, rgba(139, 92, 246, 0.18), transparent 62%),
+        radial-gradient(900px 520px at -5% 18%, rgba(232, 121, 249, 0.08), transparent 60%),
+        radial-gradient(900px 600px at 50% 120%, rgba(109, 40, 217, 0.10), transparent 65%);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+
+      --bg: #f6f4fb;
+      --bg-2: #ffffff;
+      --bg-3: #efecf8;
+      --surface: rgba(22, 17, 45, 0.035);
+      --surface-solid: #ffffff;
+      --surface-2: #f2effa;
+      --border: rgba(26, 20, 50, 0.10);
+      --border-strong: rgba(26, 20, 50, 0.18);
+      --text: #171326;
+      --text-2: #4b4560;
+      --muted: #6f6985;
+      --header-bg: rgba(250, 249, 253, 0.84);
+      --shadow: 0 24px 60px rgba(30, 20, 70, 0.12);
+      --glow: 0 0 0 1px rgba(139, 92, 246, 0.12), 0 18px 50px rgba(109, 40, 217, 0.14);
+
+      --page-glow:
+        radial-gradient(1100px 560px at 84% -8%, rgba(139, 92, 246, 0.12), transparent 62%),
+        radial-gradient(800px 480px at -8% 20%, rgba(232, 121, 249, 0.07), transparent 62%);
+    }
+
+    /* ==========================================================================
+       2. Base
+       ========================================================================== */
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      background-color: var(--bg);
+      background-image: var(--page-glow);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    [hidden] { display: none !important; }
+
+    img { display: block; max-width: 100%; }
+    svg { display: block; }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    ul, ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    ::selection {
+      background: rgba(139, 92, 246, 0.38);
+      color: #fff;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--violet);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    section[id] {
+      scroll-margin-top: calc(var(--header-h) + 18px);
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: clamp(18px, 4vw, 32px);
+    }
+
+    .container-narrow { max-width: 840px; }
+
+    .muted { color: var(--muted); }
+
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 300;
+      padding: 12px 18px;
+      border-radius: 10px;
+      background: var(--surface-solid);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-weight: 600;
+      transform: translateY(-160%);
+      transition: transform 0.2s ease;
+    }
+    .skip-link:focus-visible { transform: translateY(0); }
+
+    /* ==========================================================================
+       3. Buttons and icon buttons
+       ========================================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 22px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.22s ease, box-shadow 0.22s ease,
+        background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+    }
+
+    .btn svg { width: 18px; height: 18px; flex: none; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 52%, #d946ef 100%);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 12px 32px rgba(139, 92, 246, 0.36);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(139, 92, 246, 0.46);
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .btn:active { transform: translateY(0) scale(0.99); }
+
+    .btn-sm {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease,
+        color 0.2s ease, transform 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .icon-btn svg { width: 20px; height: 20px; }
+
+    /* Theme icon swap */
+    html[data-theme="dark"] .icon-moon { display: none; }
+    html[data-theme="dark"] .icon-sun { display: block; }
+    html[data-theme="light"] .icon-moon { display: block; }
+    html[data-theme="light"] .icon-sun { display: none; }
+
+    /* ==========================================================================
+       4. Header
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      border-bottom: 1px solid transparent;
+      backdrop-filter: saturate(150%) blur(18px);
+      -webkit-backdrop-filter: saturate(150%) blur(18px);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .site-header.is-scrolled {
+      border-bottom-color: var(--border);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.20);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      min-height: var(--header-h);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex: none;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.32);
+    }
+
+    .brand-name { font-size: 20px; }
+
+    .site-nav { margin-left: auto; }
+
+    .site-nav ul {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .site-nav a {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text-2);
+      font-size: 14.5px;
+      font-weight: 500;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .site-nav a:hover {
+      color: var(--text);
+      background: var(--surface);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: none;
+    }
+
+    .menu-toggle { display: none; }
+
+    .menu-bars,
+    .menu-bars::before,
+    .menu-bars::after {
+      display: block;
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.25s ease;
+    }
+
+    .menu-bars {
+      position: relative;
+    }
+
+    .menu-bars::before,
+    .menu-bars::after {
+      content: "";
+      position: absolute;
+      left: 0;
+    }
+
+    .menu-bars::before { top: -6px; }
+    .menu-bars::after { top: 6px; }
+
+    .menu-toggle[aria-expanded="true"] .menu-bars { background: transparent; }
+    .menu-toggle[aria-expanded="true"] .menu-bars::before {
+      transform: translateY(6px) rotate(45deg);
+    }
+    .menu-toggle[aria-expanded="true"] .menu-bars::after {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    /* ==========================================================================
+       5. Hero
+       ========================================================================== */
+    .hero {
+      position: relative;
+      padding: clamp(50px, 8vw, 104px) 0 clamp(48px, 7vw, 92px);
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.55;
+      will-change: transform;
+    }
+
+    .orb-1 {
+      width: 440px;
+      height: 440px;
+      top: -120px;
+      right: -80px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.55), transparent 68%);
+      animation: float1 16s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 360px;
+      height: 360px;
+      bottom: -100px;
+      left: -100px;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.32), transparent 68%);
+      animation: float2 19s ease-in-out infinite;
+    }
+
+    .orb-3 {
+      width: 280px;
+      height: 280px;
+      top: 30%;
+      left: 42%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.28), transparent 70%);
+      animation: float3 22s ease-in-out infinite;
+    }
+
+    .grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(167, 139, 250, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(167, 139, 250, 0.055) 1px, transparent 1px);
+      background-size: 68px 68px;
+      mask-image: radial-gradient(ellipse 70% 60% at 60% 20%, #000 20%, transparent 78%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 20%, #000 20%, transparent 78%);
+      opacity: 0.9;
+    }
+
+    @keyframes float1 {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(-26px, 30px, 0) scale(1.06); }
+    }
+    @keyframes float2 {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(30px, -24px, 0) scale(1.05); }
+    }
+    @keyframes float3 {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(-18px, -32px, 0) scale(1.08); }
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      align-items: center;
+      gap: clamp(32px, 5vw, 64px);
+    }
+
+    .hero-copy { max-width: 640px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 12px 6px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text-2);
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.14);
+      animation: pulseDot 2.6s ease-in-out infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.12); }
+      50% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0.05); }
+    }
+
+    .hero h1 {
+      margin-top: 20px;
+      font-size: clamp(42px, 7.3vw, 76px);
+      line-height: 1.01;
+      letter-spacing: -0.05em;
+      font-weight: 700;
+    }
+
+    .grad-text {
+      background: linear-gradient(100deg, #c4b5fd 0%, #a78bfa 32%, #e879f9 72%, #f0abfc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lede {
+      max-width: 520px;
+      margin-top: 22px;
+      color: var(--text-2);
+      font-size: clamp(16px, 2vw, 18.5px);
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 22px;
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .hero-meta li {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tick {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      flex: none;
+      border-radius: 50%;
+      background: rgba(52, 211, 153, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.38);
+    }
+
+    .tick::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 3.5px;
+      width: 4px;
+      height: 7px;
+      border-right: 1.5px solid var(--green);
+      border-bottom: 1.5px solid var(--green);
+      transform: rotate(45deg);
+    }
+
+    .hero-visual { position: relative; }
+
+    /* ==========================================================================
+       6. Phone mockup
+       ========================================================================== */
+    .phone {
+      --p-bg: #08070d;
+      --p-card: #141021;
+      --p-border: rgba(255, 255, 255, 0.07);
+      --p-text: #f2eefb;
+      --p-muted: #918aa8;
+      position: relative;
+      width: min(324px, 82vw);
+      margin-inline: auto;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      inset: 10% -16% -8%;
+      z-index: -1;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.36), transparent 66%);
+      filter: blur(34px);
+    }
+
+    .phone-frame {
+      position: relative;
+      aspect-ratio: 9 / 19.2;
+      padding: 9px;
+      border-radius: 46px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(155deg, #3a3155 0%, #0b0912 38%, #1a152b 100%);
+      box-shadow:
+        0 42px 90px rgba(0, 0, 0, 0.58),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      z-index: 3;
+      width: 74px;
+      height: 17px;
+      border-radius: 20px;
+      background: #05040a;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transform: translateX(-50%);
+    }
+
+    .phone-screen {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      height: 100%;
+      padding: 18px 14px 10px;
+      overflow: hidden;
+      border-radius: 38px;
+      background: linear-gradient(180deg, #100c1c 0%, #07060c 100%);
+      color: var(--p-text);
+      font-size: 11px;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      color: var(--p-muted);
+      font-size: 9px;
+      font-weight: 500;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-icons svg { height: 9px; width: auto; }
+
+    .app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 3px;
+    }
+
+    .app-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .app-brand img { border-radius: 5px; }
+
+    .app-avatar {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6, #d946ef);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+    }
+
+    .balance-card {
+      padding: 13px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.97) 0%, rgba(168, 85, 247, 0.84) 55%, rgba(217, 70, 239, 0.70) 100%);
+      box-shadow: 0 12px 26px rgba(109, 40, 217, 0.25);
+      color: #fff;
+    }
+
+    .balance-label {
+      display: block;
+      opacity: 0.78;
+      font-size: 9px;
+      letter-spacing: 0.02em;
+    }
+
+    .balance-amount {
+      display: block;
+      margin-top: 2px;
+      font-family: var(--font-display);
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+    }
+
+    .balance-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 11px;
+    }
+
+    .split {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      flex: none;
+      border-radius: 50%;
+    }
+
+    .dot-green { background: #6ee7b7; box-shadow: 0 0 0 3px rgba(110, 231, 183, 0.14); }
+    .dot-red { background: #fda4af; box-shadow: 0 0 0 3px rgba(253, 164, 175, 0.14); }
+
+    .split-text span {
+      display: block;
+      font-size: 8px;
+      opacity: 0.8;
+      line-height: 1.2;
+    }
+
+    .split-text strong {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .mini-chart {
+      padding: 10px;
+      border: 1px solid var(--p-border);
+      border-radius: 14px;
+      background: var(--p-card);
+    }
+
+    .mini-chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--p-muted);
+      font-size: 8.5px;
+    }
+
+    .demo-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      border: 1px solid rgba(167, 139, 250, 0.30);
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--violet);
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 40px;
+      margin-top: 8px;
+    }
+
+    .chart-bars span {
+      flex: 1;
+      min-height: 4px;
+      height: var(--h);
+      border-radius: 3px 3px 2px 2px;
+      background: linear-gradient(180deg, #a78bfa 0%, rgba(139, 92, 246, 0.22) 100%);
+    }
+
+    .chart-days {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      color: var(--p-muted);
+      font-size: 7px;
+    }
+
+    .tx-block {
+      padding: 10px;
+      border: 1px solid var(--p-border);
+      border-radius: 14px;
+      background: var(--p-card);
+    }
+
+    .tx-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--p-muted);
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .tx-link { color: var(--violet); text-transform: none; letter-spacing: 0; }
+
+    .tx-list li {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 0;
+      border-top: 1px solid var(--p-border);
+    }
+
+    .tx-list li:first-child { border-top: 0; margin-top: 3px; }
+
+    .tx-icon {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+    }
+
+    .tx-icon svg { width: 11px; height: 11px; }
+
+    .tx-icon.is-income { background: rgba(52, 211, 153, 0.13); color: #34d399; }
+    .tx-icon.is-expense { background: rgba(251, 113, 133, 0.13); color: #fb7185; }
+
+    .tx-info { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+    .tx-name { font-size: 9.5px; font-weight: 600; }
+    .tx-meta { color: var(--p-muted); font-size: 7.5px; }
+
+    .tx-amount { font-size: 9.5px; font-weight: 700; white-space: nowrap; }
+    .tx-amount.is-income { color: #34d399; }
+    .tx-amount.is-expense { color: #fb7185; }
+
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--p-border);
+      color: var(--p-muted);
+    }
+
+    .tab-item { display: grid; place-items: center; }
+    .tab-item svg { width: 15px; height: 15px; }
+    .tab-item.is-active { color: var(--violet); }
+
+    .mock-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12.5px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       7. Sections
+       ========================================================================== */
+    .section {
+      position: relative;
+      padding: clamp(58px, 9vw, 108px) 0;
+    }
+
+    .section-alt {
+      background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.035) 20%, rgba(139, 92, 246, 0.035) 80%, transparent);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head {
+      max-width: 700px;
+      margin: 0 auto clamp(34px, 5vw, 54px);
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--violet);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 18px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet));
+    }
+
+    .section-head h2 {
+      font-size: clamp(28px, 4.2vw, 44px);
+      letter-spacing: -0.04em;
+    }
+
+    .section-sub {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: clamp(15px, 1.8vw, 17px);
+    }
+
+    /* ==========================================================================
+       8. Features
+       ========================================================================== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card {
+      position: relative;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12);
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+      overflow: hidden;
+    }
+
+    html[data-theme="light"] .feature-card {
+      background: linear-gradient(160deg, #ffffff, #fbf9ff);
+    }
+
+    .feature-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(320px 160px at 20% 0%, rgba(139, 92, 246, 0.12), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(167, 139, 250, 0.34);
+      box-shadow: var(--glow);
+    }
+
+    .feature-card:hover::after { opacity: 1; }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(167, 139, 250, 0.22);
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(139, 92, 246, 0.18), rgba(217, 70, 239, 0.06));
+      color: var(--violet);
+    }
+
+    .feature-icon svg { width: 22px; height: 22px; }
+
+    .feature-card h3 { font-size: 17px; font-weight: 600; }
+
+    .feature-card p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* ==========================================================================
+       9. Interactive preview
+       ========================================================================== */
+    .preview-wrap { max-width: 900px; margin-inline: auto; }
+
+    .preview-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--text-2);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.24s ease, background-color 0.24s ease,
+        color 0.24s ease, transform 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    .tab:hover {
+      border-color: var(--border-strong);
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .tab.is-active {
+      border-color: rgba(167, 139, 250, 0.48);
+      background: linear-gradient(145deg, rgba(139, 92, 246, 0.16), rgba(217, 70, 239, 0.06));
+      color: var(--text);
+      box-shadow: 0 8px 26px rgba(109, 40, 217, 0.12);
+    }
+
+    .tab-icon {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      flex: none;
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--violet);
+    }
+
+    .tab-icon svg { width: 17px; height: 17px; }
+
+    .tab.is-active .tab-icon { background: rgba(139, 92, 246, 0.18); }
+
+    .tab-text { min-width: 0; }
+    .tab-text strong { display: block; font-size: 13.5px; font-weight: 600; line-height: 1.3; }
+    .tab-text small { display: block; color: var(--muted); font-size: 11.5px; line-height: 1.35; }
+
+    .preview-stage {
+      max-width: 760px;
+      margin: 20px auto 0;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.is-active { display: block; animation: panelIn 0.35s ease both; }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pv-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 470px;
+      padding: clamp(18px, 4vw, 28px);
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      background:
+        radial-gradient(900px 300px at 10% -10%, rgba(139, 92, 246, 0.12), transparent 65%),
+        var(--surface-solid);
+      box-shadow: var(--shadow);
+    }
+
+    .pv-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .pv-balance {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #d946ef 100%);
+      color: #fff;
+      box-shadow: 0 16px 36px rgba(109, 40, 217, 0.24);
+    }
+
+    .pv-label {
+      display: block;
+      font-size: 12px;
+      opacity: 0.8;
+      letter-spacing: 0.02em;
+    }
+
+    .pv-amount {
+      display: block;
+      margin-top: 2px;
+      font-family: var(--font-display);
+      font-size: clamp(28px, 5vw, 38px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+    }
+
+    .pv-amount-sm { font-size: clamp(24px, 4vw, 30px); }
+
+    .pv-split {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      margin-top: 14px;
+      font-size: 12.5px;
+    }
+
+    .pv-split-item { display: inline-flex; align-items: center; gap: 7px; opacity: 0.92; }
+    .pv-split-item b { font-weight: 700; }
+
+    .pv-chart {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-2);
+    }
+
+    .pv-chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text-2);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .pv-muted { color: var(--muted); font-size: 12.5px; }
+
+    .chart-bars-lg { height: 74px; margin-top: 14px; gap: 8px; }
+
+    .chart-bars-lg span {
+      border-radius: 5px 5px 3px 3px;
+      background: linear-gradient(180deg, #a78bfa 0%, rgba(139, 92, 246, 0.18) 100%);
+    }
+
+    .chart-days {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .pv-list {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-2);
+    }
+
+    .pv-list li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .pv-list li:first-child { border-top: 0; }
+
+    .pv-ico {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pv-ico.is-income { background: rgba(52, 211, 153, 0.13); color: var(--green); }
+    .pv-ico.is-expense { background: rgba(251, 113, 133, 0.13); color: var(--red); }
+
+    .pv-name { min-width: 0; font-size: 13.5px; font-weight: 500; }
+
+    .pv-name small {
+      display: block;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 400;
+    }
+
+    .pv-amt { font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .pv-amt.is-income { color: var(--green); }
+    .pv-amt.is-expense { color: var(--red); }
+
+    .pv-group {
+      margin: 2px 0 -6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .pv-wallets { display: flex; flex-direction: column; gap: 10px; }
+
+    .pv-wallet {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-2);
+    }
+
+    .pv-wallet-ico {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--violet);
+    }
+
+    .pv-wallet-ico svg { width: 19px; height: 19px; }
+
+    .pv-wallet-name { display: flex; flex-direction: column; font-size: 13.5px; font-weight: 600; }
+    .pv-wallet-name small { color: var(--muted); font-size: 11.5px; font-weight: 400; }
+    .pv-wallet-amt { font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+
+    .pv-note { color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    .pv-total {
+      padding: 14px 16px;
+      border: 1px solid rgba(167, 139, 250, 0.22);
+      border-radius: 16px;
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    .pv-shop {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--bg-2);
+    }
+
+    .pv-shop li {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .pv-shop li:first-child { border-top: 0; }
+
+    .pv-check {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: 6px;
+      background: transparent;
+    }
+
+    .pv-check.is-done {
+      border-color: rgba(52, 211, 153, 0.5);
+      background: rgba(52, 211, 153, 0.16);
+      position: relative;
+    }
+
+    .pv-check.is-done::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 4px;
+      height: 8px;
+      border-right: 1.5px solid var(--green);
+      border-bottom: 1.5px solid var(--green);
+      transform: rotate(45deg);
+    }
+
+    /* ==========================================================================
+       10. Screenshot gallery
+       ========================================================================== */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: clamp(18px, 3vw, 26px);
+    }
+
+    .shot { margin: 0; }
+
+    .shot-btn {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 32px;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .shot-frame {
+      position: relative;
+      display: block;
+      aspect-ratio: 9 / 19;
+      padding: 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: 34px;
+      background: linear-gradient(155deg, #2d2546 0%, #0b0912 40%, #1a152b 100%);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.32);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .shot-btn:hover .shot-frame {
+      transform: translateY(-5px);
+      border-color: rgba(167, 139, 250, 0.48);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(167, 139, 250, 0.12);
+    }
+
+    .shot-notch {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      z-index: 3;
+      width: 54px;
+      height: 12px;
+      border-radius: 20px;
+      background: #05040a;
+      transform: translateX(-50%);
+    }
+
+    .shot-media {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 26px;
+      background:
+        radial-gradient(320px 200px at 50% 0%, rgba(139, 92, 246, 0.22), transparent 70%),
+        linear-gradient(180deg, #141021, #08070d);
+    }
+
+    .shot-media img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .shot-media img.is-loaded { opacity: 1; }
+
+    .shot-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 18px;
+      text-align: center;
+      color: #f1ecff;
+    }
+
+    .ph-mark {
+      width: 52px;
+      height: 52px;
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.35), transparent 42%),
+        linear-gradient(135deg, #8b5cf6, #d946ef);
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.32);
+    }
+
+    .ph-mark-lg { width: 72px; height: 72px; border-radius: 22px; }
+
+    .ph-label { font-family: var(--font-display); font-size: 15px; font-weight: 600; }
+    .ph-note { color: rgba(241, 236, 255, 0.62); font-size: 12px; }
+
+    .shot figcaption {
+      margin-top: 12px;
+      color: var(--text-2);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       11. Download
+       ========================================================================== */
+    .download-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+      gap: clamp(28px, 5vw, 52px);
+      padding: clamp(26px, 5vw, 50px);
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      border-radius: 28px;
+      background:
+        radial-gradient(700px 300px at 0% 0%, rgba(139, 92, 246, 0.16), transparent 62%),
+        radial-gradient(600px 300px at 100% 100%, rgba(217, 70, 239, 0.10), transparent 62%),
+        var(--surface-solid);
+      box-shadow: var(--shadow);
+    }
+
+    .download-copy h2 { font-size: clamp(28px, 4vw, 42px); }
+    .download-copy p { margin-top: 14px; color: var(--text-2); font-size: 15.5px; }
+
+    .download-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .download-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .install-steps {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      align-self: start;
+    }
+
+    .install-steps h3 {
+      margin-bottom: 16px;
+      font-size: 17px;
+    }
+
+    .install-steps ol { display: flex; flex-direction: column; gap: 14px; }
+
+    .install-steps li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      color: var(--text-2);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(167, 139, 250, 0.30);
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--violet);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .link-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 22px;
+      color: var(--violet);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .link-arrow svg { width: 16px; height: 16px; transition: transform 0.2s ease; }
+    .link-arrow:hover svg { transform: translate(2px, -2px); }
+
+    /* ==========================================================================
+       12. Privacy
+       ========================================================================== */
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(30px, 5vw, 64px);
+      align-items: start;
+    }
+
+    .privacy-copy h2 { font-size: clamp(28px, 4vw, 42px); }
+    .privacy-copy p { margin-top: 16px; color: var(--text-2); font-size: 15.5px; }
+    .privacy-copy p.muted { color: var(--muted); font-size: 14px; }
+
+    .privacy-points {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .privacy-points li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+    }
+
+    .pp-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      flex: none;
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--violet);
+    }
+
+    .pp-icon svg { width: 19px; height: 19px; }
+
+    .privacy-points h3 { font-size: 15px; }
+    .privacy-points p { margin-top: 3px; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+
+    /* ==========================================================================
+       13. FAQ
+       ========================================================================== */
+    .faq-list { border-top: 1px solid var(--border); }
+
+    .faq-item { border-bottom: 1px solid var(--border); }
+
+    .faq-item summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 21px 2px;
+      cursor: pointer;
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 16.5px;
+      font-weight: 500;
+      list-style: none;
+      transition: color 0.2s ease;
+    }
+
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--violet); }
+    .faq-item[open] summary { color: var(--violet); }
+
+    .faq-icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      flex: none;
+      border: 1px solid var(--border-strong);
+      border-radius: 50%;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .faq-icon::before,
+    .faq-icon::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 1.6px;
+      border-radius: 2px;
+      background: currentColor;
+      transform: translate(-50%, -50%);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+
+    .faq-item[open] .faq-icon {
+      border-color: rgba(167, 139, 250, 0.5);
+      background: rgba(139, 92, 246, 0.14);
+      color: var(--violet);
+    }
+
+    .faq-item[open] .faq-icon::after {
+      transform: translate(-50%, -50%) rotate(0deg);
+      opacity: 0;
+    }
+
+    .faq-body { padding: 0 2px 22px; }
+    .faq-body p { color: var(--muted); font-size: 14.5px; line-height: 1.7; }
+    .faq-body a { color: var(--violet); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ==========================================================================
+       14. Footer
+       ========================================================================== */
+    .site-footer {
+      padding: 58px 0 28px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-2);
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 36px;
+    }
+
+    .footer-tagline {
+      margin-top: 16px;
+      color: var(--text-2);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .footer-note {
+      max-width: 320px;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .footer-col h3 {
+      margin-bottom: 13px;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .footer-col ul { display: flex; flex-direction: column; gap: 9px; }
+
+    .footer-col a {
+      color: var(--text-2);
+      font-size: 14px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-col a:hover { color: var(--violet); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 42px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .footer-legal { max-width: 600px; text-align: right; line-height: 1.6; }
+
+    /* ==========================================================================
+       15. Modal
+       ========================================================================== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 3, 8, 0.80);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-dialog {
+      position: relative;
+      width: min(100%, 480px);
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      background: var(--surface-solid);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.60);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 2px 12px;
+    }
+
+    .modal-head h2 { font-size: 16px; }
+
+    .modal-close { width: 36px; height: 36px; border-radius: 10px; }
+
+    .modal-media {
+      position: relative;
+      width: min(300px, 78vw);
+      aspect-ratio: 9 / 19;
+      max-height: 68vh;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      border-radius: 22px;
+      background:
+        radial-gradient(300px 180px at 50% 0%, rgba(139, 92, 246, 0.22), transparent 70%),
+        #08070d;
+    }
+
+    .modal-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #08070d;
+    }
+
+    .modal-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 20px;
+      color: #f1ecff;
+      text-align: center;
+    }
+
+    .modal-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    /* ==========================================================================
+       16. Reveal animations
+       ========================================================================== */
+    .js .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+
+    .js .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ==========================================================================
+       17. Responsive
+       ========================================================================== */
+    @media (max-width: 1100px) {
+      .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 980px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .hero-copy { max-width: 660px; }
+      .lede { margin-inline: auto; }
+      .hero-actions,
+      .hero-meta { justify-content: center; }
+      .hero-visual { margin-top: 10px; }
+
+      .privacy-grid { grid-template-columns: 1fr; }
+      .download-card { grid-template-columns: 1fr; }
+
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      .menu-toggle { display: inline-flex; }
+
+      .site-nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        display: none;
+        padding: 12px clamp(18px, 4vw, 32px) 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-2);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+      }
+
+      .site-nav.is-open { display: block; animation: panelIn 0.25s ease both; }
+
+      .site-nav ul {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 2px;
+      }
+
+      .site-nav a {
+        display: block;
+        padding: 12px;
+        font-size: 15px;
+      }
+
+      .header-actions { margin-left: auto; }
+      .site-nav { margin-left: 0; }
+    }
+
+    @media (max-width: 760px) {
+      .header-cta { display: none; }
+
+      .feature-grid { grid-template-columns: 1fr; }
+
+      .preview-tabs { grid-template-columns: 1fr 1fr; }
+
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; }
+      .footer-legal { text-align: left; }
+
+      .gallery { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+      .pv-screen { min-height: 430px; }
+    }
+
+    @media (max-width: 560px) {
+      .hero { padding-top: 42px; }
+
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .hero-actions .btn { width: 100%; }
+
+      .hero-meta { font-size: 12.5px; gap: 10px 16px; }
+
+      .phone { width: min(300px, 86vw); }
+
+      .preview-tabs { grid-template-columns: 1fr; }
+      .tab-text small { display: none; }
+
+      .tab { padding: 11px 13px; }
+
+      .download-actions { flex-direction: column; align-items: stretch; }
+      .download-actions .btn { width: 100%; }
+
+      .footer-nav { grid-template-columns: 1fr; }
+
+      .gallery { grid-template-columns: 1fr; }
+      .shot-frame { max-width: 300px; margin-inline: auto; }
+      .shot figcaption { text-align: center; }
+    }
+
+    /* ==========================================================================
+       18. Reduced motion
+       ========================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .js .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="Pockeva — back to top">
+        <img src="./icon.png" alt="" width="34" height="34" class="brand-mark" />
+        <span class="brand-name">Pockeva</span>
+      </a>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#preview">Preview</a></li>
+          <li><a href="#screenshots">Screenshots</a></li>
+          <li><a href="#download">Download</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn theme-toggle" id="theme-toggle" type="button"
+                aria-label="Switch to light theme" aria-pressed="false">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+          </svg>
+        </button>
+
+        <a class="btn btn-primary btn-sm header-cta"
+           href="https://github.com/itspabel/Pockeva/releases/tag/v1.0.4"
+           target="_blank" rel="noopener noreferrer">Download</a>
+
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button"
+                aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+          <span class="menu-bars" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="home">
+      <div class="hero-bg" aria-hidden="true">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+        <span class="grid-lines"></span>
+      </div>
+
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="badge">
+            <span class="badge-dot" aria-hidden="true"></span>
+            Android APK · Offline-first
+          </span>
+
+          <h1>Your money,<br /><span class="grad-text">in balance.</span></h1>
+
+          <p class="lede">
+            Pockeva helps you track income, expenses, wallets and everyday spending
+            in one organized place — right on your Android device.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary"
+               href="https://github.com/itspabel/Pockeva/releases/download/v1.0.4/Pockeva-v1.0.4-universal.apk"
+               target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v12" /><path d="M7 11l5 5 5-5" /><path d="M4 20h16" />
+              </svg>
+              Download for Android
+            </a>
+            <a class="btn btn-ghost" href="#features">
+              Explore Features
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14" /><path d="M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+
+          <ul class="hero-meta">
+            <li><span class="tick" aria-hidden="true"></span>No account required</li>
+            <li><span class="tick" aria-hidden="true"></span>Records stored locally</li>
+            <li><span class="tick" aria-hidden="true"></span>Works offline</li>
+          </ul>
+        </div>
+
+        <!-- Phone mockup -->
+        <div class="hero-visual">
+          <div class="phone" role="img"
+               aria-label="Illustration of the Pockeva app dashboard showing demonstration data: total balance 48,250 BDT, income 12,400 BDT, expenses 6,850 BDT, a weekly spending chart and recent transactions.">
+            <div class="phone-frame">
+              <span class="phone-notch" aria-hidden="true"></span>
+
+              <div class="phone-screen">
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <span class="status-icons" aria-hidden="true">
+                    <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.5" height="4" rx="1"/><rect x="4" y="6" width="2.5" height="6" rx="1"/><rect x="8" y="3.5" width="2.5" height="8.5" rx="1"/><rect x="12" y="1" width="2.5" height="11" rx="1"/></svg>
+                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 10.5a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Z"/><path d="M3.6 6.4a6.2 6.2 0 0 1 8.8 0l-1.2 1.2a4.5 4.5 0 0 0-6.4 0Z"/><path d="M1 3.8a9.9 9.9 0 0 1 14 0l-1.2 1.2a8.2 8.2 0 0 0-11.6 0Z"/></svg>
+                    <svg viewBox="0 0 20 12" fill="currentColor"><rect x="0.5" y="1" width="16" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="2.5" width="11" height="7" rx="1.6"/><rect x="17.5" y="4" width="2" height="4" rx="1"/></svg>
+                  </span>
+                </div>
+
+                <div class="app-bar">
+                  <span class="app-brand">
+                    <img src="./icon.png" alt="" width="18" height="18" />
+                    <span>Pockeva</span>
+                  </span>
+                  <span class="app-avatar" aria-hidden="true">P</span>
+                </div>
+
+                <div class="balance-card">
+                  <span class="balance-label">Total balance</span>
+                  <span class="balance-amount">৳ 48,250.00</span>
+                  <div class="balance-split">
+                    <div class="split">
+                      <span class="dot dot-green" aria-hidden="true"></span>
+                      <div class="split-text"><span>Income</span><strong>৳ 12,400</strong></div>
+                    </div>
+                    <div class="split">
+                      <span class="dot dot-red" aria-hidden="true"></span>
+                      <div class="split-text"><span>Expenses</span><strong>৳ 6,850</strong></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mini-chart">
+                  <div class="mini-chart-head">
+                    <span>Spending this week</span>
+                    <span class="demo-chip">Demo</span>
+                  </div>
+                  <div class="chart-bars" aria-hidden="true">
+                    <span style="--h: 42%"></span>
+                    <span style="--h: 68%"></span>
+                    <span style="--h: 34%"></span>
+                    <span style="--h: 88%"></span>
+                    <span style="--h: 56%"></span>
+                    <span style="--h: 74%"></span>
+                    <span style="--h: 30%"></span>
+                  </div>
+                  <div class="chart-days" aria-hidden="true">
+                    <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+                  </div>
+                </div>
+
+                <div class="tx-block">
+                  <div class="tx-title"><span>Recent</span><span class="tx-link">See all</span></div>
+                  <ul class="tx-list">
+                    <li class="tx-item">
+                      <span class="tx-icon is-income" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>
+                      </span>
+                      <span class="tx-info"><span class="tx-name">Salary</span><span class="tx-meta">Income · Today</span></span>
+                      <span class="tx-amount is-income">+৳ 8,000</span>
+                    </li>
+                    <li class="tx-item">
+                      <span class="tx-icon is-expense" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>
+                      </span>
+                      <span class="tx-info"><span class="tx-name">Groceries</span><span class="tx-meta">Shopping · Today</span></span>
+                      <span class="tx-amount is-expense">−৳ 1,240</span>
+                    </li>
+                    <li class="tx-item">
+                      <span class="tx-icon is-expense" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>
+                      </span>
+                      <span class="tx-info"><span class="tx-name">Bus fare</span><span class="tx-meta">Transport · Yesterday</span></span>
+                      <span class="tx-amount is-expense">−৳ 120</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="tab-bar" aria-hidden="true">
+                  <span class="tab-item is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg></span>
+                  <span class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+                  <span class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h2.5"/></svg></span>
+                  <span class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2.2 11.2a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 7H6"/></svg></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mock-note">Illustrative preview using demonstration data — not your real records.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEATURES ================= -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Features</span>
+          <h2>Everything you need to stay in balance</h2>
+          <p class="section-sub">
+            Pockeva keeps day-to-day money organized — no account, no cloud, no internet connection required.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21V6"/><path d="M4 10l4-4 4 4"/><path d="M16 3v15"/><path d="M12 14l4 4 4-4"/></svg>
+            </span>
+            <h3>Income &amp; Expense Tracking</h3>
+            <p>Record and organize everyday transactions with the details that matter to you.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7V5.5A2.5 2.5 0 0 0 17.5 3H5a2 2 0 0 0 0 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5"/><path d="M16.5 13.5h.01"/></svg>
+            </span>
+            <h3>Wallet Management</h3>
+            <p>Manage cash, mobile financial services, bank accounts and custom wallets as records inside the app.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2.2 11.2a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+            </span>
+            <h3>Shopping List</h3>
+            <p>Organize shopping items, quantities, units, purchase costs and a history of past shopping.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/></svg>
+            </span>
+            <h3>Borrowing &amp; Lending</h3>
+            <p>Keep track of money you have borrowed and money you have lent to others.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 20v-6"/><path d="M12 20V8"/><path d="M18 20v-9"/></svg>
+            </span>
+            <h3>Financial Insights</h3>
+            <p>Review financial summaries, spending patterns and reports generated from your own records.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+            </span>
+            <h3>PDF Reports</h3>
+            <p>Generate financial reports for personal reference, created locally on your device.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+            </span>
+            <h3>Local Backup &amp; Restore</h3>
+            <p>Export and restore supported app data using local backup files you control.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M18.4 17.5H7a4 4 0 0 1-.9-7.9"/><path d="M9.2 5.6A6 6 0 0 1 18.6 10c1.4.3 2.4 1.5 2.4 2.9"/></svg>
+            </span>
+            <h3>Offline-First Experience</h3>
+            <p>Designed for managing personal finances without requiring an online account.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8"/><path d="M18 6h2"/><path d="M4 12h4"/><path d="M12 12h8"/><path d="M4 18h8"/><path d="M18 18h2"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg>
+            </span>
+            <h3>Personalization</h3>
+            <p>Profile settings and light/dark appearance options to make the app feel like yours.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= INTERACTIVE PREVIEW ================= -->
+    <section class="section section-alt" id="preview">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Product preview</span>
+          <h2>Take a closer look inside the app</h2>
+          <p class="section-sub">
+            Switch between screens to see how Pockeva organizes your money.
+            Everything below is demonstration data.
+          </p>
+        </div>
+
+        <div class="preview-wrap reveal">
+          <div class="preview-tabs" id="preview-tabs" role="tablist" aria-label="App screen preview">
+            <button class="tab is-active" role="tab" id="tab-dashboard" aria-controls="panel-dashboard"
+                    aria-selected="true" tabindex="0" type="button">
+              <span class="tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+              </span>
+              <span class="tab-text"><strong>Dashboard</strong><small>Balance, chart &amp; recents</small></span>
+            </button>
+
+            <button class="tab" role="tab" id="tab-transactions" aria-controls="panel-transactions"
+                    aria-selected="false" tabindex="-1" type="button">
+              <span class="tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+              </span>
+              <span class="tab-text"><strong>Transactions</strong><small>Income &amp; expenses</small></span>
+            </button>
+
+            <button class="tab" role="tab" id="tab-wallets" aria-controls="panel-wallets"
+                    aria-selected="false" tabindex="-1" type="button">
+              <span class="tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h2.5"/></svg>
+              </span>
+              <span class="tab-text"><strong>Wallets</strong><small>Cash, bank &amp; more</small></span>
+            </button>
+
+            <button class="tab" role="tab" id="tab-shopping" aria-controls="panel-shopping"
+                    aria-selected="false" tabindex="-1" type="button">
+              <span class="tab-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2.2 11.2a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+              </span>
+              <span class="tab-text"><strong>Shopping</strong><small>Lists &amp; costs</small></span>
+            </button>
+          </div>
+
+          <div class="preview-stage">
+
+            <!-- Dashboard -->
+            <div class="tab-panel is-active" role="tabpanel" id="panel-dashboard"
+                 aria-labelledby="tab-dashboard" tabindex="0">
+              <div class="pv-screen">
+                <div class="pv-head"><span>Dashboard</span><span class="demo-chip">Demo data</span></div>
+                <div class="pv-balance">
+                  <span class="pv-label">Total balance</span>
+                  <span class="pv-amount">৳ 48,250.00</span>
+                  <div class="pv-split">
+                    <span class="pv-split-item"><i class="dot dot-green" aria-hidden="true"></i>Income <b>৳ 12,400</b></span>
+                    <span class="pv-split-item"><i class="dot dot-red" aria-hidden="true"></i>Expenses <b>৳ 6,850</b></span>
+                  </div>
+                </div>
+                <div class="pv-chart">
+                  <div class="pv-chart-head"><span>Weekly spending</span><span class="pv-muted">৳ 6,850</span></div>
+                  <div class="chart-bars chart-bars-lg" aria-hidden="true">
+                    <span style="--h: 40%"></span><span style="--h: 66%"></span><span style="--h: 32%"></span>
+                    <span style="--h: 90%"></span><span style="--h: 54%"></span><span style="--h: 72%"></span>
+                    <span style="--h: 28%"></span>
+                  </div>
+                  <div class="chart-days" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+                </div>
+                <ul class="pv-list">
+                  <li><span class="pv-ico is-income" aria-hidden="true">+</span><span class="pv-name">Salary</span><span class="pv-amt is-income">+৳ 8,000</span></li>
+                  <li><span class="pv-ico is-expense" aria-hidden="true">−</span><span class="pv-name">Groceries</span><span class="pv-amt is-expense">−৳ 1,240</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Transactions -->
+            <div class="tab-panel" role="tabpanel" id="panel-transactions"
+                 aria-labelledby="tab-transactions" tabindex="0">
+              <div class="pv-screen">
+                <div class="pv-head"><span>Transactions</span><span class="demo-chip">Demo data</span></div>
+                <p class="pv-group">Today</p>
+                <ul class="pv-list">
+                  <li><span class="pv-ico is-income" aria-hidden="true">+</span><span class="pv-name">Salary<small>Income · Main wallet</small></span><span class="pv-amt is-income">+৳ 8,000</span></li>
+                  <li><span class="pv-ico is-expense" aria-hidden="true">−</span><span class="pv-name">Groceries<small>Shopping · Cash</small></span><span class="pv-amt is-expense">−৳ 1,240</span></li>
+                  <li><span class="pv-ico is-expense" aria-hidden="true">−</span><span class="pv-name">Mobile top-up<small>Utility · Mobile wallet</small></span><span class="pv-amt is-expense">−৳ 300</span></li>
+                </ul>
+                <p class="pv-group">Yesterday</p>
+                <ul class="pv-list">
+                  <li><span class="pv-ico is-expense" aria-hidden="true">−</span><span class="pv-name">Bus fare<small>Transport · Cash</small></span><span class="pv-amt is-expense">−৳ 120</span></li>
+                  <li><span class="pv-ico is-income" aria-hidden="true">+</span><span class="pv-name">Freelance work<small>Income · Bank account</small></span><span class="pv-amt is-income">+৳ 4,400</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Wallets -->
+            <div class="tab-panel" role="tabpanel" id="panel-wallets"
+                 aria-labelledby="tab-wallets" tabindex="0">
+              <div class="pv-screen">
+                <div class="pv-head"><span>Wallets</span><span class="demo-chip">Demo data</span></div>
+                <ul class="pv-wallets">
+                  <li class="pv-wallet">
+                    <span class="pv-wallet-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3"/><circle cx="12" cy="12" r="2.6"/></svg>
+                    </span>
+                    <span class="pv-wallet-name">Cash<small>Everyday cash</small></span>
+                    <span class="pv-wallet-amt">৳ 3,250</span>
+                  </li>
+                  <li class="pv-wallet">
+                    <span class="pv-wallet-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18"/></svg>
+                    </span>
+                    <span class="pv-wallet-name">Bank account<small>Savings</small></span>
+                    <span class="pv-wallet-amt">৳ 32,000</span>
+                  </li>
+                  <li class="pv-wallet">
+                    <span class="pv-wallet-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg>
+                    </span>
+                    <span class="pv-wallet-name">Mobile wallet<small>Daily spending</small></span>
+                    <span class="pv-wallet-amt">৳ 13,000</span>
+                  </li>
+                </ul>
+                <p class="pv-note">Wallets are records you manage inside Pockeva. They are not connected to banks or mobile financial service providers.</p>
+              </div>
+            </div>
+
+            <!-- Shopping -->
+            <div class="tab-panel" role="tabpanel" id="panel-shopping"
+                 aria-labelledby="tab-shopping" tabindex="0">
+              <div class="pv-screen">
+                <div class="pv-head"><span>Shopping list</span><span class="demo-chip">Demo data</span></div>
+                <div class="pv-total">
+                  <span class="pv-label">Estimated total</span>
+                  <span class="pv-amount pv-amount-sm">৳ 2,380</span>
+                </div>
+                <ul class="pv-shop">
+                  <li><span class="pv-check is-done" aria-hidden="true"></span><span class="pv-name">Rice<small>5 kg · ৳ 75 / kg</small></span><span class="pv-amt">৳ 375</span></li>
+                  <li><span class="pv-check is-done" aria-hidden="true"></span><span class="pv-name">Cooking oil<small>2 L · ৳ 190 / L</small></span><span class="pv-amt">৳ 380</span></li>
+                  <li><span class="pv-check" aria-hidden="true"></span><span class="pv-name">Eggs<small>30 pcs · ৳ 11 / pc</small></span><span class="pv-amt">৳ 330</span></li>
+                  <li><span class="pv-check" aria-hidden="true"></span><span class="pv-name">Milk powder<small>2 pcs · ৳ 648 / pc</small></span><span class="pv-amt">৳ 1,295</span></li>
+                </ul>
+                <p class="pv-note">Quantities, units and purchase costs are saved so past shopping can be reviewed later.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCREENSHOTS ================= -->
+    <section class="section" id="screenshots">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Screenshots</span>
+          <h2>A closer look at Pockeva</h2>
+          <p class="section-sub">
+            Tap any screen to open a larger preview.
+            <span class="muted">Placeholders are shown where a screenshot has not been added yet.</span>
+          </p>
+        </div>
+
+        <div class="gallery">
+
+          <figure class="shot reveal" data-shot="dashboard" data-title="Dashboard">
+            <button class="shot-btn" type="button" aria-label="Open Dashboard screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/dashboard.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Dashboard</figcaption>
+          </figure>
+
+          <figure class="shot reveal" data-shot="transactions" data-title="Transactions">
+            <button class="shot-btn" type="button" aria-label="Open Transactions screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/transactions.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Transactions</figcaption>
+          </figure>
+
+          <figure class="shot reveal" data-shot="wallets" data-title="Wallets">
+            <button class="shot-btn" type="button" aria-label="Open Wallets screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/wallets.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Wallets</figcaption>
+          </figure>
+
+          <figure class="shot reveal" data-shot="shopping-list" data-title="Shopping List">
+            <button class="shot-btn" type="button" aria-label="Open Shopping List screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/shopping-list.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Shopping List</figcaption>
+          </figure>
+
+          <figure class="shot reveal" data-shot="borrowing-lending" data-title="Borrowing &amp; Lending">
+            <button class="shot-btn" type="button" aria-label="Open Borrowing and Lending screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/borrowing-lending.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Borrowing &amp; Lending</figcaption>
+          </figure>
+
+          <figure class="shot reveal" data-shot="reports" data-title="Reports">
+            <button class="shot-btn" type="button" aria-label="Open Reports screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/reports.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Reports</figcaption>
+          </figure>
+
+          <figure class="shot reveal" data-shot="settings" data-title="Settings">
+            <button class="shot-btn" type="button" aria-label="Open Settings screenshot preview">
+              <span class="shot-frame">
+                <span class="shot-notch" aria-hidden="true"></span>
+                <span class="shot-media">
+                  <img src="./screenshots/settings.png" alt="" width="720" height="1560" loading="lazy" decoding="async" />
+                  <span class="shot-fallback" aria-hidden="true">
+                    
+                    
+                  </span>
+                </span>
+              </span>
+            </button>
+            <figcaption>Settings</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DOWNLOAD ================= -->
+    <section class="section section-alt" id="download">
+      <div class="container">
+        <div class="download-card reveal">
+          <div class="download-copy">
+            <span class="eyebrow">Download</span>
+            <h2>Get Pockeva for Android</h2>
+            <p>
+              Pockeva is distributed as an Android APK through GitHub Releases — not through Google Play.
+              Open the release page and download the APK asset attached to it.
+            </p>
+
+            <div class="download-actions">
+              <a class="btn btn-primary"
+                 href="https://github.com/itspabel/Pockeva/releases/download/v1.0.4/Pockeva-v1.0.4-universal.apk"
+                 target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3v12" /><path d="M7 11l5 5 5-5" /><path d="M4 20h16" />
+                </svg>
+                Download for Android
+              </a>
+              <a class="btn btn-ghost"
+                 href="https://github.com/itspabel/Pockeva"
+                 target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.55v-2.1c-3.2.7-3.88-1.4-3.88-1.4-.53-1.34-1.3-1.7-1.3-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.51-1.46.11-3.05 0 0 .96-.3 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.18-1.48 3.14-1.18 3.14-1.18.63 1.59.24 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .3.2.66.8.55A11.5 11.5 0 0 0 23.5 12A11.5 11.5 0 0 0 12 .5Z" />
+                </svg>
+                View Repository
+              </a>
+            </div>
+
+            <p class="download-note">
+              Availability and compatibility vary by device and Android version.
+              Please check the release notes on GitHub before installing.
+            </p>
+          </div>
+
+          <div class="install-steps">
+            <h3>How to install</h3>
+            <ol>
+              <li><span class="step-num" aria-hidden="true">1</span> Open the release page on GitHub.</li>
+              <li><span class="step-num" aria-hidden="true">2</span> Download the APK asset from the release.</li>
+              <li><span class="step-num" aria-hidden="true">3</span> Open the downloaded file and follow Android's installation prompts.</li>
+              <li><span class="step-num" aria-hidden="true">4</span> If Android asks for permission to install unknown apps, allow it only for the relevant installation source — and only if you trust the APK.</li>
+            </ol>
+            <a class="link-arrow" href="https://github.com/itspabel/Pockeva/issues"
+               target="_blank" rel="noopener noreferrer">
+              Report an issue
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7" /><path d="M8 7h9v9" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRIVACY ================= -->
+    <section class="section" id="privacy">
+      <div class="container">
+        <div class="privacy-grid">
+          <div class="privacy-copy reveal">
+            <span class="eyebrow">Privacy</span>
+            <h2>Built to keep your records on your device</h2>
+            <p>
+              According to the app's in-app privacy policy, Pockeva stores financial records locally on your
+              device. It does not require an account and does not use analytics, advertising networks or telemetry.
+              Backups and PDF reports are generated locally, in line with that policy.
+            </p>
+            <p class="muted">
+              This website is a static information page. It does not collect financial information, does not
+              require registration, and does not include tracking scripts, analytics or advertising.
+            </p>
+          </div>
+
+          <ul class="privacy-points reveal">
+            <li>
+              <span class="pp-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              </span>
+              <div><h3>Local storage</h3><p>Financial records are stored locally, per the in-app privacy policy.</p></div>
+            </li>
+            <li>
+              <span class="pp-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+              </span>
+              <div><h3>No account needed</h3><p>There is no sign-up, login or online profile requirement.</p></div>
+            </li>
+            <li>
+              <span class="pp-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M18.4 17.5H7a4 4 0 0 1-.9-7.9"/><path d="M9.2 5.6A6 6 0 0 1 18.6 10c1.4.3 2.4 1.5 2.4 2.9"/></svg>
+              </span>
+              <div><h3>No telemetry</h3><p>No analytics, advertising networks or telemetry are used by the app.</p></div>
+            </li>
+            <li>
+              <span class="pp-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+              </span>
+              <div><h3>Local exports</h3><p>Backup files and PDF reports are created locally on your device.</p></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="section section-alt" id="faq">
+      <div class="container container-narrow">
+        <div class="section-head reveal">
+          <span class="eyebrow">FAQ</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item reveal">
+            <summary>
+              <span>What is Pockeva?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>Pockeva is an offline-first personal finance app for Android. It helps you record income and
+              expenses, manage wallets, keep shopping lists, track borrowing and lending, and review financial
+              summaries — all in one organized place.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>Is Pockeva available on Google Play?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>No. Pockeva is distributed as an Android APK through GitHub Releases. The release page is the
+              official download destination.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>How do I download and install it?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>Open the <a href="https://github.com/itspabel/Pockeva/releases/tag/v1" target="_blank" rel="noopener noreferrer">latest release</a>,
+              download the APK asset, then open the downloaded file and follow Android's installation prompts.
+              If Android requests permission to install unknown apps, allow it for the relevant installation
+              source only if you trust the APK.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>Can I use it offline?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>Yes. Pockeva is designed as an offline-first app and does not require an online account to
+              manage your finances.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>Where is my financial data stored?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>According to the app's in-app privacy policy, financial records are stored locally on your
+              device. Pockeva does not require an account and does not use analytics, advertising networks or
+              telemetry.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>How do I back up or restore my data?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>Pockeva supports exporting and restoring supported app data using local backup files. Backups
+              are generated locally — keep the backup file somewhere you trust.</p>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>How can I report a bug?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-body">
+              <p>Please open an issue on the
+              <a href="https://github.com/itspabel/Pockeva/issues" target="_blank" rel="noopener noreferrer">GitHub issue tracker</a>.
+              Including your device model, Android version and steps to reproduce helps a lot.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+  </main>
+<div align="center">
+<a href="https://www.bengallaunch.com/p/pockeva" target="_blank"><img src="https://www.bengallaunch.com/api/badges/pockeva/badge.svg?type=badge" alt="Featured on BengalLaunch" style="width: 260px; height: 56px;" width="260" height="56"/></a>
+</div>
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="#home" aria-label="Pockeva — back to top">
+          <img src="./icon.png" alt="" width="34" height="34" class="brand-mark" />
+          <span class="brand-name">Pockeva</span>
+        </a>
+        <p class="footer-tagline">Your money, in balance.</p>
+        <p class="footer-note">
+          An offline-first personal finance app for Android.
+        </p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <div class="footer-col">
+          <h3>Product</h3>
+          <ul>
+            <li><a href="https://github.com/itspabel/Pockeva/releases/tag/v1.0.4" target="_blank" rel="noopener noreferrer">Download for Android</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#preview">Preview</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Project</h3>
+          <ul>
+            <li><a href="https://github.com/itspabel/Pockeva" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://github.com/itspabel/Pockeva/issues" target="_blank" rel="noopener noreferrer">Report an Issue</a></li>
+            <li><a href="#privacy">Privacy information</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 Tasfiqul Alam Pabel. All rights reserved.</p>
+      <p class="footer-legal">
+        Pockeva is proprietary software. The application and its contents are protected by copyright;
+        all rights reserved by the author. Please refer to the GitHub repository for licensing details.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ================= SCREENSHOT MODAL ================= -->
+  <div class="modal" id="shot-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-dialog" role="document">
+      <div class="modal-head">
+        <h2 id="modal-title">Screenshot</h2>
+        <button class="icon-btn modal-close" type="button" aria-label="Close preview" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 6l12 12" /><path d="M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-media">
+        <img id="modal-img" alt="" />
+        <div class="modal-fallback" id="modal-fallback" hidden aria-hidden="true">
+          <span class="ph-mark ph-mark-lg"></span>
+          <span class="ph-label" id="modal-fallback-label">Screenshot</span>
+          <span class="ph-note">Screenshot coming soon</span>
+        </div>
+      </div>
+      <p class="modal-note">Demonstration screenshot of the Pockeva Android app.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var root = document.documentElement;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var THEME_KEY = 'pockeva-theme';
+
+      /* ------------------------------------------------------------------
+         Theme toggle
+         ------------------------------------------------------------------ */
+      var themeToggle = document.getElementById('theme-toggle');
+      var themeMeta = document.getElementById('theme-color-meta');
+
+      function applyTheme(theme, persist) {
+        root.setAttribute('data-theme', theme);
+
+        if (themeToggle) {
+          themeToggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+          themeToggle.setAttribute('aria-label',
+            theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+        }
+
+        if (themeMeta) {
+          themeMeta.setAttribute('content', theme === 'light' ? '#f6f4fb' : '#08070d');
+        }
+
+        if (persist) {
+          try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
+        }
+      }
+
+      if (themeToggle) {
+        applyTheme(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark', false);
+
+        themeToggle.addEventListener('click', function () {
+          var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+          applyTheme(next, true);
+        });
+      }
+
+      /* ------------------------------------------------------------------
+         Mobile navigation
+         ------------------------------------------------------------------ */
+      var menuToggle = document.getElementById('menu-toggle');
+      var siteNav = document.getElementById('site-nav');
+      var header = document.querySelector('.site-header');
+
+      function closeMenu() {
+        if (!siteNav || !menuToggle) return;
+        siteNav.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Open menu');
+      }
+
+      if (menuToggle && siteNav) {
+        menuToggle.addEventListener('click', function () {
+          var isOpen = siteNav.classList.toggle('is-open');
+          menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        });
+
+        siteNav.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', closeMenu);
+        });
+
+        document.addEventListener('click', function (event) {
+          if (!siteNav.classList.contains('is-open')) return;
+          if (header && header.contains(event.target)) return;
+          closeMenu();
+        });
+
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') closeMenu();
+        });
+
+        window.addEventListener('resize', function () {
+          if (window.innerWidth > 900) closeMenu();
+        });
+      }
+
+      /* ------------------------------------------------------------------
+         Header scrolled state
+         ------------------------------------------------------------------ */
+      function updateHeader() {
+        if (!header) return;
+        header.classList.toggle('is-scrolled', window.scrollY > 8);
+      }
+      updateHeader();
+      window.addEventListener('scroll', updateHeader, { passive: true });
+
+      /* ------------------------------------------------------------------
+         Preview tabs
+         ------------------------------------------------------------------ */
+      var tabs = Array.prototype.slice.call(
+        document.querySelectorAll('#preview-tabs [role="tab"]')
+      );
+
+      var panels = tabs.map(function (tab) {
+        return document.getElementById(tab.getAttribute('aria-controls'));
+      });
+
+      function activateTab(index, focusTab) {
+        tabs.forEach(function (tab, i) {
+          var selected = i === index;
+          tab.classList.toggle('is-active', selected);
+          tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+          tab.tabIndex = selected ? 0 : -1;
+
+          if (panels[i]) panels[i].classList.toggle('is-active', selected);
+        });
+
+        if (focusTab && tabs[index]) tabs[index].focus();
+      }
+
+      tabs.forEach(function (tab, index) {
+        tab.addEventListener('click', function () {
+          activateTab(index, false);
+        });
+
+        tab.addEventListener('keydown', function (event) {
+          var next = null;
+
+          if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+          else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+
+          if (next !== null) {
+            event.preventDefault();
+            activateTab(next, true);
+          }
+        });
+      });
+
+      /* ------------------------------------------------------------------
+         Screenshot gallery + accessible modal
+         ------------------------------------------------------------------ */
+      var modal = document.getElementById('shot-modal');
+      var modalTitle = document.getElementById('modal-title');
+      var modalImg = document.getElementById('modal-img');
+      var modalFallback = document.getElementById('modal-fallback');
+      var modalFallbackLabel = document.getElementById('modal-fallback-label');
+      var lastFocused = null;
+
+      function getModalFocusable() {
+        if (!modal) return [];
+        return Array.prototype.filter.call(
+          modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'),
+          function (el) {
+            return !el.hasAttribute('disabled') && el.offsetParent !== null;
+          }
+        );
+      }
+
+      function openModal(figure) {
+        if (!modal || !modalTitle || !modalImg || !modalFallback) return;
+
+        lastFocused = document.activeElement;
+
+        var title = figure.getAttribute('data-title') || 'Screenshot';
+        var img = figure.querySelector('img');
+        var imageLoaded = img && img.classList.contains('is-loaded') && img.naturalWidth > 0;
+
+        modalTitle.textContent = title;
+
+        if (imageLoaded) {
+          modalImg.src = img.currentSrc || img.src;
+          modalImg.alt = 'Pockeva ' + title + ' screenshot';
+          modalImg.hidden = false;
+          modalFallback.hidden = true;
+        } else {
+          modalImg.hidden = true;
+          modalImg.removeAttribute('src');
+          modalImg.alt = '';
+          modalFallback.hidden = false;
+          if (modalFallbackLabel) modalFallbackLabel.textContent = title;
+        }
+
+        modal.hidden = false;
+        document.body.classList.add('modal-open');
+
+        window.requestAnimationFrame(function () {
+          var closeButton = modal.querySelector('.modal-close');
+          if (closeButton) closeButton.focus();
+        });
+
+        document.addEventListener('keydown', modalKeydown);
+      }
+
+      function closeModal() {
+        if (!modal || modal.hidden) return;
+
+        modal.hidden = true;
+        document.body.classList.remove('modal-open');
+        document.removeEventListener('keydown', modalKeydown);
+
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+          lastFocused.focus();
+        }
+      }
+
+      function modalKeydown(event) {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeModal();
+          return;
+        }
+
+        if (event.key !== 'Tab') return;
+
+        var focusable = getModalFocusable();
+        if (!focusable.length) return;
+
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      if (modal) {
+        modal.querySelectorAll('[data-close]').forEach(function (el) {
+          el.addEventListener('click', closeModal);
+        });
+
+        if (modalImg) {
+          modalImg.addEventListener('error', function () {
+            modalImg.hidden = true;
+            if (modalFallback) modalFallback.hidden = false;
+          });
+        }
+      }
+
+      document.querySelectorAll('.shot').forEach(function (figure) {
+        var button = figure.querySelector('.shot-btn');
+        var img = figure.querySelector('img');
+
+        function markLoaded() {
+          if (!img) return;
+          img.classList.add('is-loaded');
+          figure.classList.remove('is-placeholder');
+        }
+
+        function markFailed() {
+          if (!img) return;
+          img.classList.remove('is-loaded');
+          figure.classList.add('is-placeholder');
+        }
+
+        if (img) {
+          if (img.complete) {
+            if (img.naturalWidth > 0) markLoaded();
+            else markFailed();
+          }
+          img.addEventListener('load', markLoaded);
+          img.addEventListener('error', markFailed);
+        } else {
+          figure.classList.add('is-placeholder');
+        }
+
+        if (button) {
+          button.addEventListener('click', function () {
+            openModal(figure);
+          });
+        }
+      });
+
+      /* Hide broken brand icons instead of showing a broken-image glyph. */
+      document.querySelectorAll('.brand-mark, .app-brand img').forEach(function (img) {
+        img.addEventListener('error', function () {
+          img.style.display = 'none';
+        });
+      });
+
+      /* ------------------------------------------------------------------
+         Scroll reveal
+         ------------------------------------------------------------------ */
+      var revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+
+      function showAllReveals() {
+        revealEls.forEach(function (el) {
+          el.classList.add('is-visible');
+        });
+      }
+
+      if ('IntersectionObserver' in window && !reduceMotion.matches) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.12,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        revealEls.forEach(function (el) {
+          observer.observe(el);
+        });
+      } else {
+        showAllReveals();
+      }
+
+      if (typeof reduceMotion.addEventListener === 'function') {
+        reduceMotion.addEventListener('change', function () {
+          if (reduceMotion.matches) showAllReveals();
+        });
+      }
+
+    })();
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://itspabel.github.io/Pockeva/#website",
+      "url": "https://itspabel.github.io/Pockeva/",
+      "name": "Pockeva",
+      "description": "Offline-first personal finance app for Android.",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://itspabel.github.io/Pockeva/#app",
+      "name": "Pockeva",
+      "alternateName": "Pockeva Finance",
+      "applicationCategory": "FinanceApplication",
+      "applicationSubCategory": "Personal Finance",
+      "operatingSystem": "Android",
+      "description": "Pockeva helps you track income, expenses, wallets, shopping lists and borrowing in one organized place. Records are stored locally on your device; no account is required.",
+      "url": "https://itspabel.github.io/Pockeva/",
+      "downloadUrl": "https://github.com/itspabel/Pockeva/releases/tag/v1",
+      "softwareVersion": "v1",
+      "inLanguage": "en",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BDT",
+        "availability": "https://schema.org/InStock"
+      },
+      "featureList": [
+        "Income and expense tracking",
+        "Wallet management",
+        "Shopping list with quantities and costs",
+        "Borrowing and lending records",
+        "Financial insights",
+        "PDF reports generated locally",
+        "Local backup and restore",
+        "Offline-first usage",
+        "Light and dark appearance"
+      ],
+      "sameAs": [
+        "https://github.com/itspabel/Pockeva"
+      ],
+      "installUrl": "https://github.com/itspabel/Pockeva/releases/tag/v1"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://itspabel.github.io/Pockeva/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Pockeva?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pockeva is an offline-first personal finance app for Android. It helps you record income and expenses, manage wallets, keep shopping lists, track borrowing and lending, and review financial summaries in one organized place."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Pockeva available on Google Play?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Pockeva is distributed as an Android APK through GitHub Releases. The release page is the official download destination."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I download and install Pockeva?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open the latest release on GitHub, download the APK asset, then open the downloaded file and follow Android's installation prompts. If Android requests permission to install unknown apps, allow it for the relevant installation source only if you trust the APK."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use Pockeva offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Pockeva is designed as an offline-first app and does not require an online account to manage your finances."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is my financial data stored in Pockeva?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "According to the app's in-app privacy policy, financial records are stored locally on your device. Pockeva does not require an account and does not use analytics, advertising networks or telemetry."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I back up or restore my data in Pockeva?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pockeva supports exporting and restoring supported app data using local backup files. Backups are generated locally, so keep the backup file somewhere you trust."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I report a bug in Pockeva?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open an issue on the GitHub issue tracker at github.com/itspabel/Pockeva/issues. Including your device model, Android version and steps to reproduce helps a lot."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</body>
+  </html>
