@@ -1,10 +1,14 @@
 {
-  "latest_version": "1.0.5",
-  "version_code": 105,
+  "latest_version": "1.0.6",
+  "version_code": 106,
   "release_url": "https://github.com/itspabel/Pockeva/releases/latest",
   "release_notes": [
-    "Improved dashboard",
-    "Fixed bugs",
-    "Performance improvements"
+    "Added 5 new native Android Home Screen Widgets (Total Balance, Monthly Income & Expense, Individual Wallet Balance, Monthly Expense Summary, Quick Add Transaction) with light/dark theme support and Settings configuration.",
+    "Added Cash Withdrawal from Bank, Card, MFS, PSP, Savings, and Other wallets into Cash wallets with optional separate fee expense tracking.",
+    "Added Debit Card / Credit Card type selector, dynamic Card Label auto-update, TAP (Trust And Pay) in MFS, and a dedicated BD PSP wallet category (10 local PSP providers).",
+    "Added custom accent color picker for Cash, PSP, Bank, Savings, and Other wallets.",
+    "Added full in-place Edit support for Loans & Lendings and fixed Start Date display on cards and detail dialogs.",
+    "Disabled future months in Financial Reports month selector while keeping current and past months active.",
+    "Refined dialog/sheet field spacing (-20%) and transaction amount field height (-20%) for cleaner ergonomics."
   ]
 }
