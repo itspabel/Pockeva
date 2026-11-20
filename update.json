@@ -1,14 +1,12 @@
 {
-  "latest_version": "1.0.6",
-  "version_code": 106,
+  "latest_version": "1.0.7",
+  "version_code": 107,
   "release_url": "https://github.com/itspabel/Pockeva/releases/latest",
   "release_notes": [
-    "Added 5 new native Android Home Screen Widgets (Total Balance, Monthly Income & Expense, Individual Wallet Balance, Monthly Expense Summary, Quick Add Transaction) with light/dark theme support and Settings configuration.",
-    "Added Cash Withdrawal from Bank, Card, MFS, PSP, Savings, and Other wallets into Cash wallets with optional separate fee expense tracking.",
-    "Added Debit Card / Credit Card type selector, dynamic Card Label auto-update, TAP (Trust And Pay) in MFS, and a dedicated BD PSP wallet category (10 local PSP providers).",
-    "Added custom accent color picker for Cash, PSP, Bank, Savings, and Other wallets.",
-    "Added full in-place Edit support for Loans & Lendings and fixed Start Date display on cards and detail dialogs.",
-    "Disabled future months in Financial Reports month selector while keeping current and past months active.",
-    "Refined dialog/sheet field spacing (-20%) and transaction amount field height (-20%) for cleaner ergonomics."
+    "Audited and upgraded overall Android UI responsiveness across Display Size settings (Small, Default, Large), Font Scale settings, screen resolutions, and Gesture vs. 3-Button Navigation while preserving Pockeva's compact sizing.",
+    "Redesigned the Settings Home Screen Widgets section into 3 clean options: Default Individual Wallet Widget, Add Widget, and How to Add & Manage Widgets.",
+    "Added Add Widget selection sheet and live Widget Preview bottom sheet powered by local Pockeva data with Compact, Standard, and Expanded size presets plus native Home Screen pinning and manual fallback guide.",
+    "Aligned the Currency selector vertically with the Principal Amount input field in Loan, Lent, and Borrow sheets.",
+    "Locked the Loan Type selector (Lent / Borrowed / Bank/NGO) with a clear disabled state when editing existing loans."
   ]
 }
