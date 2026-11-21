@@ -1,12 +1,12 @@
 {
-  "latest_version": "1.0.7",
-  "version_code": 107,
+  "latest_version": "1.0.8",
+  "version_code": 108,
   "release_url": "https://github.com/itspabel/Pockeva/releases/latest",
   "release_notes": [
-    "Audited and upgraded overall Android UI responsiveness across Display Size settings (Small, Default, Large), Font Scale settings, screen resolutions, and Gesture vs. 3-Button Navigation while preserving Pockeva's compact sizing.",
-    "Redesigned the Settings Home Screen Widgets section into 3 clean options: Default Individual Wallet Widget, Add Widget, and How to Add & Manage Widgets.",
-    "Added Add Widget selection sheet and live Widget Preview bottom sheet powered by local Pockeva data with Compact, Standard, and Expanded size presets plus native Home Screen pinning and manual fallback guide.",
-    "Aligned the Currency selector vertically with the Principal Amount input field in Loan, Lent, and Borrow sheets.",
-    "Locked the Loan Type selector (Lent / Borrowed / Bank/NGO) with a clear disabled state when editing existing loans."
+    "Separated the Wallets page into dedicated Wallets and Cards capsule tabs (Wallets first, Cards second) while keeping Total Balance and Quick Add actions accessible above.",
+    "Fixed the Android Adaptive Launcher Icon scaling and dark emerald background so the Pockeva wallet emblem displays cleanly across launchers and launch animations.",
+    "Locked Wallet Type during editing, separated Add Wallet and Add Card flows, and added persistent long-press drag-and-drop reordering across Wallets, Cards, pickers, and widgets.",
+    "Added full confirmation preview dialogs showing exact before and after wallet balances before completing Transfers, Currency Conversions, and Cash Withdrawals.",
+    "Applied Noto Serif Bengali typography automatically to Bengali text across the app UI and PDF reports, alongside upgraded navigation bar and tactile button styling."
   ]
 }
