@@ -1,12 +1,12 @@
 {
-  "latest_version": "1.0.8",
-  "version_code": 108,
+  "latest_version": "1.0.9",
+  "version_code": 109,
   "release_url": "https://github.com/itspabel/Pockeva/releases/latest",
   "release_notes": [
-    "Separated the Wallets page into dedicated Wallets and Cards capsule tabs (Wallets first, Cards second) while keeping Total Balance and Quick Add actions accessible above.",
-    "Fixed the Android Adaptive Launcher Icon scaling and dark emerald background so the Pockeva wallet emblem displays cleanly across launchers and launch animations.",
-    "Locked Wallet Type during editing, separated Add Wallet and Add Card flows, and added persistent long-press drag-and-drop reordering across Wallets, Cards, pickers, and widgets.",
-    "Added full confirmation preview dialogs showing exact before and after wallet balances before completing Transfers, Currency Conversions, and Cash Withdrawals.",
-    "Applied Noto Serif Bengali typography automatically to Bengali text across the app UI and PDF reports, alongside upgraded navigation bar and tactile button styling."
+    "Added a compact live preview confirmation dialog for Add & Edit Transaction flows displaying type, title, category, wallet, amount, date, time, and notes before saving.",
+    "Polished the Add & Edit Transaction Hero Amount box with dynamic Expense/Income tinting, refined currency pill, and distraction-free centered numeric entry without the trailing clear cross.",
+    "Updated PSP wallet accounts to use a dedicated Contactless digital payment icon across wallet lists, pickers, detail views, confirmation dialogs, and widgets.",
+    "Bundled complete Unicode Noto Serif Bengali fonts and unified Plus Jakarta Sans tabular numeric typography across all displayed balances, inputs, and PDF reports.",
+    "Swapped Add Wallet (Primary) and Add Card (Secondary) positions and refined the Wallets & Cards capsule tabs to match Loans & Lending."
   ]
 }
