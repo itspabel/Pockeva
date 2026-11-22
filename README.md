@@ -6,7 +6,7 @@
 
 **An offline-first personal finance app for Android.**
 
-[![Release](https://img.shields.io/badge/Release-v1.0.8-8B5CF6)](https://github.com/itspabel/Pockeva/releases/latest)
+[![Release](https://img.shields.io/badge/Release-v1.0.9-8B5CF6)](https://github.com/itspabel/Pockeva/releases/latest)
 
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](#installation)
 
@@ -73,6 +73,20 @@ Designed for offline use, Pockeva stores supported financial records locally on 
   <img src="screenshots/wallets.png" width="24%" alt="Wallet Management" />
   <img src="screenshots/shopping-list.png" width="24%" alt="Shopping List" />
 </p>
+
+## What's New
+
+<!-- release-notes:start -->
+### v1.0.9 (2026-11-22)
+
+- Added a compact live preview confirmation dialog for Add & Edit Transaction flows displaying type, title, category, wallet, amount, date, time, and notes before saving.
+- Polished the Add & Edit Transaction Hero Amount box with dynamic Expense/Income tinting, refined currency pill, and distraction-free centered numeric entry without the trailing clear cross.
+- Updated PSP wallet accounts to use a dedicated Contactless digital payment icon across wallet lists, pickers, detail views, confirmation dialogs, and widgets.
+- Bundled complete Unicode Noto Serif Bengali fonts and unified Plus Jakarta Sans tabular numeric typography across all displayed balances, inputs, and PDF reports.
+- Swapped Add Wallet (Primary) and Add Card (Secondary) positions and refined the Wallets & Cards capsule tabs to match Loans & Lending.
+
+[View full release](https://github.com/itspabel/Pockeva/releases/tag/v1.0.9)
+<!-- release-notes:end -->
 
 ## Installation
 
