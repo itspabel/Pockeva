@@ -1,4 +1,5 @@
 User-agent: *
-Disallow: /downloads/
 Allow: /
+Disallow: /downloads/
+
 Sitemap: https://pockeva.asf.run/sitemap.xml
