@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /downloads/
 Allow: /
-Sitemap: https://ict-aide.asf.run/sitemap.xml
+Sitemap: https://pockeva.asf.run/sitemap.xml
