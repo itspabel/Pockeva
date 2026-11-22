@@ -1,0 +1,56 @@
+# Deploys the landing page to GitHub Pages and adds the latest release APKs
+# under /downloads (for in-page download progress). Nothing is committed to the
+# repo, so git history never grows when you publish a new release.
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # A release runs on a tag, which Pages blocks, so re-run this workflow on main.
+  trigger:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
+
+  deploy:
+    if: github.event_name != 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build site folder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir _site
+          rsync -a --exclude='.git' --exclude='.github' --exclude='_site' ./ _site/
+          mkdir -p _site/downloads
+          gh release download --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --dir _site/downloads --clobber || echo "No release APKs found"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
