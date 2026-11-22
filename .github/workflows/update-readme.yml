@@ -1,0 +1,226 @@
+# Keeps README.md in sync with the latest GitHub release.
+# One file for every repo: copy it to .github/workflows/update-readme.yml.
+# It only ever commits README.md.
+#
+# Tuned for Pockeva, ICT-Assistant and SirErKhata. On every new release it updates:
+#   - The shields.io version badge, e.g. badge/Release-v1.0.9-8B5CF6, badge/version-2.0.1-6366f1,
+#     badge/Version-1.0.5%20(105)-2563EB (the "(105)" version code is rebuilt from the tag when it can be)
+#   - A "Latest version" table row, e.g. | **Latest version** | **2.0.1** |
+#   - `v1.0.5` written in backticks (headings such as "Download & Installation (`v1.0.5`)")
+#   - APK file names and /releases/download/<tag>/ links that still carry the old version
+#   - Release notes: an existing "Release Notes / What's New / Highlights in `vX`" section is rewritten.
+#     If a README has none (Pockeva, SirErKhata) a "What's New" section is added once, before the
+#     Installation/Download section, and kept up to date between these markers:
+#         <!-- release-notes:start -->  ...  <!-- release-notes:end -->
+#     Inline version text can use <!-- version:start -->v1.0.0<!-- version:end -->.
+name: Update README release info
+
+on:
+  release:
+    types: [published, released, edited, deleted]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-readme-release
+  cancel-in-progress: false
+
+jobs:
+  readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Get the latest release
+        id: rel
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view --repo "$GITHUB_REPOSITORY" --json tagName,body,url,publishedAt > "$RUNNER_TEMP/latest.json"; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No published release found, nothing to update."
+          fi
+
+      - name: Update README.md
+        if: steps.rel.outputs.found == 'true'
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+
+          RUNNER_TEMP = os.environ.get("RUNNER_TEMP", "/tmp")
+          with open(os.path.join(RUNNER_TEMP, "latest.json"), encoding="utf-8") as f:
+              rel = json.load(f)
+
+          tag = rel["tagName"]
+          body = (rel.get("body") or "").replace("\r\n", "\n").strip()
+          url = rel.get("url", "")
+          date = (rel.get("publishedAt") or "")[:10]
+          bare = tag[1:] if tag[:1] in "vV" else tag
+
+          readme = next((n for n in os.listdir(".") if n.lower() == "readme.md"), None)
+          if not readme:
+              print("No README.md found, nothing to do.")
+              raise SystemExit(0)
+          if os.environ.get("GITHUB_ENV"):
+              with open(os.environ["GITHUB_ENV"], "a") as f:
+                  f.write(f"README_PATH={readme}\n")
+
+          with open(readme, encoding="utf-8") as f:
+              src = f.read()
+          s = src
+          report = []
+
+
+          def shield_escape(t):
+              return t.replace("-", "--").replace("_", "__").replace(" ", "_")
+
+
+          def styled(old_text):
+              """New version written in the same style (with or without 'v') as old_text."""
+              return ("v" if old_text[:1] in "vV" else "") + bare
+
+
+          old_ver = None
+
+          # 1) Static shields.io version badges
+          #    e.g. badge/Release-v1.0.9-8B5CF6   badge/version-2.0.1-6366f1   badge/Version-1.0.5%20(105)-2563EB
+          badge_re = re.compile(
+              r"(img\.shields\.io/badge/(?:version|release|latest(?:[_ -]release)?|current[_ ]version)-)"
+              r"(v?\d+(?:\.\d+)*(?:--[A-Za-z0-9.]+)*)"
+              r"((?:%20|_)?\((\d+)\))?"
+              r"(?=-[A-Za-z0-9])",
+              re.I,
+          )
+
+
+          def badge_sub(m):
+              global old_ver
+              if old_ver is None:
+                  old_ver = m.group(2).lstrip("vV")
+              out = m.group(1) + shield_escape(styled(m.group(2)))
+              if m.group(3):  # keep a "(versionCode)" suffix only when it can be derived safely
+                  parts = bare.split(".")
+                  if len(parts) == 3 and all(p.isdigit() and len(p) == 1 for p in parts):
+                      sep = re.match(r"(?:%20|_)?", m.group(3)).group(0)
+                      out += f"{sep}({''.join(parts)})"
+                  else:
+                      report.append("version code in badge removed (cannot derive it from the tag)")
+              return out
+
+
+          s, n = badge_re.subn(badge_sub, s)
+          if n:
+              report.append(f"{n} version badge(s)")
+
+          # 2) Table row such as: | **Latest version** | **2.0.1** |
+          row_re = re.compile(r"(\|\s*\**\s*(?:latest |current )?version\s*\**\s*\|\s*\**\s*)(v?\d[^|*\s]*)(\s*\**\s*\|)", re.I)
+
+
+          def row_sub(m):
+              global old_ver
+              if old_ver is None:
+                  old_ver = m.group(2).lstrip("vV")
+              return m.group(1) + styled(m.group(2)) + m.group(3)
+
+
+          s, n = row_re.subn(row_sub, s)
+          if n:
+              report.append(f"{n} version table row(s)")
+
+          # 3) Optional inline marker: <!-- version:start -->v1.0.5<!-- version:end -->
+          s, n = re.subn(
+              r"(<!--\s*version:start\s*-->).*?(<!--\s*version:end\s*-->)",
+              lambda m: m.group(1) + tag + m.group(2),
+              s,
+              flags=re.I | re.S,
+          )
+          if n:
+              report.append(f"{n} version marker(s)")
+
+          # 4) Other places that still carry the old version
+          if old_ver and old_ver != bare:
+              oq = re.escape(old_ver)
+              # `v1.0.5` in backticks (headings, text)
+              s, n = re.subn(r"`(v?)" + oq + r"`", lambda m: "`" + m.group(1) + bare + "`", s)
+              if n:
+                  report.append(f"{n} backticked version(s)")
+              # APK file names: ICT-Assistant-1.0.5-arm64-v8a-release.apk, Pockeva-v1.0.8-universal.apk
+              s, n = re.subn(
+                  r"(?<![\w.-])([\w.-]+?-)(v?)" + oq + r"(-[\w.-]*\.apk)",
+                  lambda m: m.group(1) + m.group(2) + bare + m.group(3),
+                  s,
+              )
+              if n:
+                  report.append(f"{n} APK file name(s)")
+              # direct download URLs
+              s, n = re.subn(r"(releases/download/)v?" + oq + r"/", lambda m: m.group(1) + tag + "/", s)
+              if n:
+                  report.append(f"{n} download URL(s)")
+
+          # 5) Release notes
+          notes = re.sub(r"^#{1,3}\s", "#### ", body, flags=re.M) if body else "_No release notes provided._"
+          link = f"\n\n[View full release]({url})" if url else ""
+          title = f"### {tag}" + (f" ({date})" if date else "")
+          block = f"{title}\n\n{notes}{link}"
+
+          marker_re = re.compile(r"(<!--\s*release-notes:start\s*-->).*?(<!--\s*release-notes:end\s*-->)", re.I | re.S)
+          head_re = re.compile(
+              r"^(#{2,3})[^\n]*(?:release notes|latest release|what['’]?s new|release info(?:rmation)?|changelog|latest update|highlights in)[^\n]*$",
+              re.I | re.M,
+          )
+          anchor_re = re.compile(r"^##\s[^\n]*\b(?:Installation|Download)\b[^\n]*$", re.I | re.M)
+
+          if marker_re.search(s):
+              s = marker_re.sub(lambda m: f"{m.group(1)}\n{block}\n{m.group(2)}", s)
+              report.append("release notes (markers)")
+          else:
+              m = head_re.search(s)
+              if m:
+                  level = len(m.group(1))
+                  nxt = re.compile(r"^#{1,%d}\s" % level, re.M).search(s, m.end())
+                  end = nxt.start() if nxt else len(s)
+                  old_section = s[m.end():end]
+                  keep_rule = old_section.rstrip().endswith("---")  # keep a trailing horizontal rule
+                  heading_has_version = tag in m.group(0) or bare in m.group(0)
+                  content = f"{notes}{link}" if heading_has_version else block
+                  new_section = "\n\n" + content + "\n\n" + ("---\n\n" if keep_rule else "")
+                  s = s[: m.end()] + new_section + s[end:]
+                  report.append("release notes (existing section)")
+              else:
+                  a = anchor_re.search(s)
+                  if a:
+                      new = f"## What's New\n\n<!-- release-notes:start -->\n{block}\n<!-- release-notes:end -->\n\n"
+                      s = s[: a.start()] + new + s[a.start():]
+                      report.append("release notes (new section added)")
+                  else:
+                      report.append("release notes: no place found, add <!-- release-notes:start --> / <!-- release-notes:end -->")
+
+          print(f"Latest release: {tag}")
+          print("Updated: " + "; ".join(report) if report else "Nothing matched in README.md")
+
+          if s != src:
+              with open(readme, "w", encoding="utf-8") as f:
+                  f.write(s)
+              print("README.md updated.")
+          else:
+              print("README.md already up to date.")
+          PY
+
+      - name: Commit README.md
+        if: steps.rel.outputs.found == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -- "$README_PATH"
+          if git diff --cached --quiet; then
+            echo "README.md already up to date"
+          else
+            git commit -m "docs: update README for latest release"
+            git push
+          fi
