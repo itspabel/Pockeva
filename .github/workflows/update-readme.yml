@@ -1,25 +1,22 @@
-# Keeps README.md (and, optionally, badge images) in sync with the latest GitHub release.
+# Keeps README.md in sync with the latest GitHub release.
 # One file for every repo: copy it to .github/workflows/update-readme.yml.
+# It only ever commits README.md.
 #
-# README.md, updated on every release:
+# On every new release it updates:
 #   - shields.io version badges, e.g. badge/Release-v1.0.9-8B5CF6 or badge/Version-1.0.5%20(105)-2563EB
-#   - a "Latest version" table row, `v1.0.5` in backticks, APK file names and /releases/download/<tag>/ links
+#     (a "(105)" version code is rebuilt from the tag when it can be)
+#   - a "Latest version" table row, e.g. | **Latest version** | **2.0.1** |
+#   - `v1.0.5` written in backticks, APK file names and /releases/download/<tag>/ links
 #   - release notes: an existing "Release Notes / What's New / Highlights in `vX`" section is rewritten,
 #     otherwise a "What's New" section is added once before Installation/Download.
 #     Exact placement: <!-- release-notes:start --> ... <!-- release-notes:end -->
 #     Inline version text: <!-- version:start -->v1.0.0<!-- version:end -->
-#
-# Badge images (only if the file exists, so other repos are not affected):
-#   Assets/badges/split/release-light.svg and release-dark.svg      -> new tag name
-#   Assets/badges/split/downloads-light.svg and downloads-dark.svg  -> total download count
-# The downloads badge is also refreshed once a week.
+# The downloads badge (shields.io github/downloads) is live, so it needs no update.
 name: Update README release info
 
 on:
   release:
     types: [published, released, edited, deleted]
-  schedule:
-    - cron: "17 3 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -220,181 +217,15 @@ jobs:
               print("README.md already up to date.")
           PY
 
-      - name: Update badge images
-        if: steps.rel.outputs.found == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 - <<'PY'
-          import html
-
-          FONT = "'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-          THEMES = {
-              "light": dict(bg="#ffffff", border="#d0d7de", text="#1f2328", muted="#59636e"),
-              "dark": dict(bg="#0d1117", border="#30363d", text="#f0f6fc", muted="#9198a1"),
-          }
-          ICONS = {
-              "github": '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
-              "obtainium": '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v6m0 0l-3-3m3 3l3-3"/>',
-              "globe": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>',
-              "coffee": '<path d="M17 8h1a4 4 0 010 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
-              "android": '<path d="M5 17a7 7 0 0114 0z"/><path d="M8.5 7.2L7 5M15.5 7.2L17 5"/><path d="M9.5 12.5h.01M14.5 12.5h.01"/>',
-              "tag": '<path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><path d="M7.5 7.5h.01"/>',
-              "download": '<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/>',
-              "license": '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
-              "offline": '<path d="M2 2l20 20M8.5 16.4a5 5 0 017 0M2 8.8a15 15 0 014.2-2.7M10.7 5.1A15 15 0 0122 8.8M5 12.9a10 10 0 015.2-2.7M15 11.2a10 10 0 014 1.7M12 20h.01"/>',
-          }
-
-
-          def tw(text, size, bold=False, spacing=0.0):
-              """Rough text width, the SVG uses textLength so it always fits exactly."""
-              w = 0.0
-              for c in text:
-                  if c in "ilj.,:;'| !I":
-                      w += 0.32
-                  elif c in "mwMW":
-                      w += 0.86
-                  elif c.isupper() or c.isdigit():
-                      w += 0.64
-                  else:
-                      w += 0.55
-              w = w * size * (1.07 if bold else 1.0) + spacing * len(text)
-              return round(w, 1)
-
-
-          def _rgb(c):
-              return tuple(int(c[i:i + 2], 16) for i in (1, 3, 5))
-
-
-          def shade(c, f):
-              """f < 0 darkens, f > 0 lightens."""
-              out = []
-              for v in _rgb(c):
-                  out.append(int(v * (1 + f)) if f < 0 else int(v + (255 - v) * f))
-              return "#%02x%02x%02x" % tuple(out)
-
-
-          # name -> (main colour, second colour, text colour)
-          COLORS = {
-              "github": ("#2f363d", "#0d1117", "#ffffff"),
-              "obtainium": ("#7c3aed", "#a855f7", "#ffffff"),
-              "website": ("#4f46e5", "#0ea5e9", "#ffffff"),
-              "support": ("#fbbf24", "#f97316", "#3b2300"),
-              "android": ("#16a34a", "#16a34a", "#ffffff"),
-              "release": ("#7c3aed", "#7c3aed", "#ffffff"),
-              "downloads": ("#2563eb", "#2563eb", "#ffffff"),
-              "license": ("#475569", "#475569", "#ffffff"),
-              "offline": ("#0d9488", "#0d9488", "#ffffff"),
-          }
-
-
-          def accent(name, theme):
-              return COLORS[name][0]
-
-
-          def split_svg(label, value, color, icon, theme):
-              H, R = 32, 8
-              label_w, value_w = tw(label, 13, True), tw(value, 13, True)
-              lw = round(12 + 16 + 8 + label_w + 12, 1)
-              W = round(lw + 12 + value_w + 12, 1)
-              right = shade(color, -0.22)
-              edge = "rgba(255,255,255,.14)" if theme == "dark" else "rgba(0,0,0,.14)"
-              esc_l, esc_v = html.escape(label), html.escape(value)
-              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{esc_l}: {esc_v}">
-          <title>{esc_l}: {esc_v}</title>
-          <defs>
-          <clipPath id="c"><rect width="{W}" height="{H}" rx="{R}"/></clipPath>
-          <linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>
-          </defs>
-          <g clip-path="url(#c)">
-          <rect width="{lw}" height="{H}" fill="{color}"/>
-          <rect x="{lw}" width="{W-lw}" height="{H}" fill="{right}"/>
-          <rect width="{W}" height="{H}" fill="url(#s)"/>
-          </g>
-          <rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="{R-.5}" fill="none" stroke="{edge}"/>
-          <g transform="translate(12 8) scale(.6667)" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">{ICONS[icon]}</g>
-          <g font-family="{FONT}" font-size="13" font-weight="600" fill="#ffffff">
-          <text x="36" y="21" fill-opacity=".95" textLength="{label_w}" lengthAdjust="spacingAndGlyphs">{esc_l}</text>
-          <text x="{lw+12}" y="21" font-weight="800" textLength="{value_w}" lengthAdjust="spacingAndGlyphs">{esc_v}</text>
-          </g></svg>
-          '''
-
-
-          def pill_svg(caption, title, name, icon, theme):
-              c1, c2, tx = COLORS[name]
-              H = 60
-              cap_w, title_w = tw(caption, 10.5, True, 1.2), tw(title, 20, True)
-              W = round(64 + max(cap_w, title_w) + 26, 1)
-              edge = "rgba(255,255,255,.22)" if theme == "dark" else "rgba(0,0,0,.12)"
-              dark_text = tx != "#ffffff"
-              disc = "#000000" if dark_text else "#ffffff"
-              esc_c, esc_t = html.escape(caption), html.escape(title)
-              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{esc_c.title()} {esc_t}">
-          <title>{esc_c.title()} {esc_t}</title>
-          <defs>
-          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{c1}"/><stop offset="1" stop-color="{c2}"/></linearGradient>
-          <linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></linearGradient>
-          </defs>
-          <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="29" fill="url(#g)"/>
-          <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="29" fill="url(#s)"/>
-          <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="29" fill="none" stroke="{edge}" stroke-width="2"/>
-          <circle cx="32" cy="30" r="19" fill="{disc}" opacity="{'.12' if dark_text else '.2'}"/>
-          <g transform="translate(19.6 17.6) scale(1.0333)" fill="none" stroke="{tx}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">{ICONS[icon]}</g>
-          <g font-family="{FONT}" fill="{tx}">
-          <text x="64" y="23" font-size="10.5" font-weight="700" letter-spacing="1.2" fill-opacity=".85" textLength="{cap_w}" lengthAdjust="spacingAndGlyphs">{esc_c}</text>
-          <text x="64" y="46" font-size="20" font-weight="800" textLength="{title_w}" lengthAdjust="spacingAndGlyphs">{esc_t}</text>
-          </g></svg>
-          '''
-
-
-          def fmt_count(n):
-              n = int(n)
-              if n >= 1_000_000:
-                  return f"{n/1_000_000:.1f}M".replace(".0M", "M")
-              if n >= 1000:
-                  return f"{n/1000:.1f}k".replace(".0k", "k")
-              return str(n)
-
-          import json, os, subprocess
-
-          with open(os.path.join(os.environ.get("RUNNER_TEMP", "/tmp"), "latest.json"), encoding="utf-8") as f:
-              tag = json.load(f)["tagName"]
-
-          base = "Assets/badges/split"
-          if not os.path.exists(f"{base}/release-light.svg"):
-              print("No Assets/badges/split/release-light.svg, skipping badge images.")
-              raise SystemExit(0)
-
-          for th in THEMES:
-              with open(f"{base}/release-{th}.svg", "w", encoding="utf-8") as f:
-                  f.write(split_svg("Release", tag, accent("release", th), "tag", th))
-          print(f"Release badge set to {tag}")
-
-          if os.path.exists(f"{base}/downloads-light.svg"):
-              out = subprocess.run(
-                  ["gh", "api", "--paginate", f"repos/{os.environ['GITHUB_REPOSITORY']}/releases", "--jq", ".[].assets[].download_count"],
-                  capture_output=True, text=True,
-              )
-              if out.returncode == 0:
-                  total = sum(int(x) for x in out.stdout.split() if x.isdigit())
-                  for th in THEMES:
-                      with open(f"{base}/downloads-{th}.svg", "w", encoding="utf-8") as f:
-                          f.write(split_svg("Downloads", fmt_count(total), accent("downloads", th), "download", th))
-                  print(f"Downloads badge set to {fmt_count(total)} ({total} total)")
-              else:
-                  print("Could not read download counts, leaving the downloads badge as it is.")
-          PY
-
-      - name: Commit changes
+      - name: Commit README.md
         if: steps.rel.outputs.found == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -- "$README_PATH"
-          if [ -d Assets/badges ]; then git add -- Assets/badges; fi
           if git diff --cached --quiet; then
-            echo "Nothing to commit"
+            echo "README.md already up to date"
           else
-            git commit -m "docs: update README and badges for latest release"
+            git commit -m "docs: update README for latest release"
             git push
           fi
