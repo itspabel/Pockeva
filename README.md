@@ -120,15 +120,15 @@ You decide where backups go, you can export reports as PDF, and you can wipe eve
 ## 🆕 What's New
 
 <!-- release-notes:start -->
-### v1.1.0
+### v1.1.0 (2026-11-24)
 
 - Added live confirmation preview dialogs with short Confirm actions across Wallet & Card creation/editing, Transactions, Transfers, Conversions, Withdrawals, and Loans.
-- Upgraded Success dialogs with context-aware animated vector hero badges, operation-specific detail summaries, and live Before -> After wallet balance cards.
-- Enhanced Financial Reports with an Income vs Expense Bar/Trend chart, interactive Savings Rate progress gauge, and expanded daily & monthly cashflow highlights.
+- Upgraded Success dialogs with context-aware animated vector hero badges, operation-specific detail summaries, and live Before -> After wallet balance cards. 
+- Enhanced Financial Reports with an Income vs Expense Bar/Trend chart, interactive Savings Rate progress gauge, and expanded daily & monthly cashflow highlights. 
 - Added a Repeat action in Transaction Details to quickly prefill a new entry with today's date, plus an Exit Pockeva confirmation dialog on Home Back navigation.
 - Added a Share App button in Settings sharing itspabel.github.io/Pockeva, updated the Support card with a Coffee icon, and ensured crisp vector icons across all alerts.
 
-[View full release](https://github.com/itspabel/Pockeva/releases/latest)
+[View full release](https://github.com/itspabel/Pockeva/releases/tag/v1.1.0)
 <!-- release-notes:end -->
 
 Older versions are listed in [release-notes.md](release-notes.md).
