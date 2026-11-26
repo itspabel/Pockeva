@@ -7,15 +7,17 @@
   <h3>An offline-first personal finance app for Android.</h3>
 
   <p>
-    <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Download Pockeva" src="https://img.shields.io/badge/Download-Latest_Release-8B5CF6?style=for-the-badge&logo=github&logoColor=white"></a>
-    <a href="https://itspabel.github.io/Donate"><img alt="Support the developer" src="https://img.shields.io/badge/Support-Buy_me_a_coffee-F59E0B?style=for-the-badge&logo=buymeacoffee&logoColor=white"></a>
+    <a href="https://github.com/itspabel/Pockeva/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-github-dark.svg"><img alt="Get it on GitHub" src="Assets/badges/pill/get-github-light.svg" height="60"></picture></a>
+    <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/itspabel/Pockeva/"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-obtainium-dark.svg"><img alt="Get it on Obtainium" src="Assets/badges/pill/get-obtainium-light.svg" height="60"></picture></a>
+    <a href="https://pockeva.asf.run"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/website-dark.svg"><img alt="Visit the Pockeva website" src="Assets/badges/pill/website-light.svg" height="60"></picture></a>
+    <a href="https://itspabel.github.io/Donate"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/support-dark.svg"><img alt="Support the developer" src="Assets/badges/pill/support-light.svg" height="60"></picture></a>
   </p>
   <p>
-    <img alt="Platform: Android" src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white">
-    <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/Release-v1.1.0-8B5CF6?style=flat-square"></a>
-    <a href="https://github.com/itspabel/Pockeva/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/itspabel/Pockeva/total?style=flat-square&color=6D3FD9&label=Downloads"></a>
-    <a href="#copyright--license"><img alt="License: Proprietary" src="https://img.shields.io/badge/License-Proprietary-555555?style=flat-square"></a>
-    <img alt="Works offline" src="https://img.shields.io/badge/Works-Offline-10B981?style=flat-square">
+    <picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/platform-dark.svg"><img alt="Platform: Android" src="Assets/badges/split/platform-light.svg" height="32"></picture>
+    <a href="https://github.com/itspabel/Pockeva/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/release-dark.svg"><img alt="Latest release" src="Assets/badges/split/release-light.svg" height="32"></picture></a>
+    <a href="https://github.com/itspabel/Pockeva/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/downloads-dark.svg"><img alt="Downloads" src="Assets/badges/split/downloads-light.svg" height="32"></picture></a>
+    <a href="#copyright--license"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/license-dark.svg"><img alt="License: Proprietary" src="Assets/badges/split/license-light.svg" height="32"></picture></a>
+    <picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/offline-dark.svg"><img alt="Offline-first" src="Assets/badges/split/offline-light.svg" height="32"></picture>
   </p>
 
   <p>
@@ -136,7 +138,8 @@ Older versions are listed in [release-notes.md](release-notes.md).
 ## 📥 Download
 
 <div align="center">
-  <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Get it on GitHub Releases" src="https://img.shields.io/badge/Get_it_on-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white"></a>
+  <a href="https://github.com/itspabel/Pockeva/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-github-dark.svg"><img alt="Get it on GitHub" src="Assets/badges/pill/get-github-light.svg" height="60"></picture></a>
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/itspabel/Pockeva/"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-obtainium-dark.svg"><img alt="Get it on Obtainium" src="Assets/badges/pill/get-obtainium-light.svg" height="60"></picture></a>
 </div>
 
 #### Which APK should I download?
@@ -160,6 +163,8 @@ Not sure which one to pick? Choose the **universal** APK.
 5. If Android says the app is blocked or from an unknown source, tap **More details**, then **Install anyway**. You may also need to allow installs from the app you used to download the APK.
 6. Open Pockeva.
 
+Prefer automatic updates? Add Pockeva to [Obtainium](https://github.com/ImranR98/Obtainium) with the Obtainium badge above.
+
 Only install APK files from sources you trust. Official downloads are published only on the [Releases page](https://github.com/itspabel/Pockeva/releases) and the [Pockeva website](https://pockeva.asf.run).
 
 ---
@@ -169,7 +174,7 @@ Only install APK files from sources you trust. Official downloads are published 
 
 Pockeva is free to download and is built independently. If it helps you stay in balance, please consider supporting the developer so development can keep going.
 
-<a href="https://itspabel.github.io/Donate"><img alt="Support the developer" src="https://img.shields.io/badge/Support-the_developer-F59E0B?style=for-the-badge&logo=buymeacoffee&logoColor=white"></a>
+<a href="https://itspabel.github.io/Donate"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/support-dark.svg"><img alt="Support the developer" src="Assets/badges/pill/support-light.svg" height="60"></picture></a>
 
 ---
 
