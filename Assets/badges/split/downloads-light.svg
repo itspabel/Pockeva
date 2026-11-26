@@ -1,10 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="150.9" height="32" viewBox="0 0 150.9 32" role="img" aria-label="Downloads: —">
-<title>Downloads: —</title>
-<defs><clipPath id="c"><rect width="150.9" height="32" rx="8"/></clipPath></defs>
-<g clip-path="url(#c)"><rect width="150.9" height="32" fill="#ffffff"/><rect width="119.2" height="32" fill="#3b82f6" opacity=".14"/></g>
-<rect x=".5" y=".5" width="149.9" height="31" rx="7.5" fill="none" stroke="#d0d7de"/>
-<g transform="translate(12 8) scale(.6667)" fill="none" stroke="#3b82f6" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></g>
-<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="600">
-<text x="36" y="21" fill="#59636e" textLength="71.2" lengthAdjust="spacingAndGlyphs">Downloads</text>
-<text x="131.2" y="21" fill="#1f2328" font-weight="700" textLength="7.7" lengthAdjust="spacingAndGlyphs">—</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="169.9" height="32" viewBox="0 0 169.9 32" role="img" aria-label="Downloads: 122">
+<title>Downloads: 122</title>
+<defs>
+<clipPath id="c"><rect width="169.9" height="32" rx="8"/></clipPath>
+<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<g clip-path="url(#c)">
+<rect width="119.2" height="32" fill="#2563eb"/>
+<rect x="119.2" width="50.7" height="32" fill="#1c4db7"/>
+<rect width="169.9" height="32" fill="url(#s)"/>
+</g>
+<rect x=".5" y=".5" width="168.9" height="31" rx="7.5" fill="none" stroke="rgba(0,0,0,.14)"/>
+<g transform="translate(12 8) scale(.6667)" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></g>
+<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#ffffff">
+<text x="36" y="21" fill-opacity=".95" textLength="71.2" lengthAdjust="spacingAndGlyphs">Downloads</text>
+<text x="131.2" y="21" font-weight="800" textLength="26.7" lengthAdjust="spacingAndGlyphs">122</text>
 </g></svg>
