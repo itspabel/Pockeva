@@ -1,0 +1,109 @@
+name: Bug report
+description: Report a problem in Pockeva for Android.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Pockeva. Issues are public, so please do not include passwords, account credentials, backup files or screenshots that show private financial details.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the open and closed issues for this problem.
+          required: true
+        - label: I can reproduce this on the latest Pockeva release.
+          required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Pockeva version
+      description: The exact version from the app, or the release tag you installed. Do not write only "latest".
+      placeholder: "v1.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: android-version
+    attributes:
+      label: Android version
+      placeholder: "Android 14"
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: Manufacturer and model. Mention a custom ROM or emulator if you use one.
+      placeholder: "Samsung Galaxy A34"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: apk
+    attributes:
+      label: APK you installed
+      options:
+        - Universal
+        - arm64-v8a
+        - armeabi-v7a
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      multiple: true
+      options:
+        - Installation or updates
+        - Dashboard
+        - Income and expenses
+        - Wallets and cards
+        - Shopping list or reminders
+        - Borrowing, loans and lending
+        - Reports or PDF export
+        - Backup and restore
+        - Settings, profile or themes
+        - Performance or battery
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Tap ...
+        3. See the problem
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or extra details
+      description: Hide any private balances or personal information before attaching images.

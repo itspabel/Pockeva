@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/itspabel/Pockeva/security/advisories/new
+    about: Privately report vulnerabilities. Do not disclose security issues in a public issue.
+  - name: Pockeva website
+    url: https://pockeva.asf.run
+    about: Download links, install steps and FAQ.
