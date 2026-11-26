@@ -1,0 +1,211 @@
+# One-time helper: creates the banner and badge SVG images, so you do not have to upload 20 files by hand.
+# Run it once: Actions tab -> "Generate README images" -> Run workflow. You can delete this file afterwards.
+# Needs icon.png in the repo root. The Release and Downloads badges are kept up to date
+# afterwards by update-readme.yml.
+name: Generate README images
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - run: pip install pillow
+
+      - name: Generate images
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import html
+
+          FONT = "'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+          THEMES = {
+              "light": dict(bg="#ffffff", border="#d0d7de", text="#1f2328", muted="#59636e"),
+              "dark": dict(bg="#0d1117", border="#30363d", text="#f0f6fc", muted="#9198a1"),
+          }
+          ICONS = {
+              "github": '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
+              "obtainium": '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v6m0 0l-3-3m3 3l3-3"/>',
+              "globe": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>',
+              "coffee": '<path d="M17 8h1a4 4 0 010 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
+              "android": '<path d="M5 17a7 7 0 0114 0z"/><path d="M8.5 7.2L7 5M15.5 7.2L17 5"/><path d="M9.5 12.5h.01M14.5 12.5h.01"/>',
+              "tag": '<path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><path d="M7.5 7.5h.01"/>',
+              "download": '<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/>',
+              "license": '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+              "offline": '<path d="M2 2l20 20M8.5 16.4a5 5 0 017 0M2 8.8a15 15 0 014.2-2.7M10.7 5.1A15 15 0 0122 8.8M5 12.9a10 10 0 015.2-2.7M15 11.2a10 10 0 014 1.7M12 20h.01"/>',
+          }
+
+
+          def tw(text, size, bold=False, spacing=0.0):
+              """Rough text width, the SVG uses textLength so it always fits exactly."""
+              w = 0.0
+              for c in text:
+                  if c in "ilj.,:;'| !I":
+                      w += 0.32
+                  elif c in "mwMW":
+                      w += 0.86
+                  elif c.isupper() or c.isdigit():
+                      w += 0.64
+                  else:
+                      w += 0.55
+              w = w * size * (1.07 if bold else 1.0) + spacing * len(text)
+              return round(w, 1)
+
+
+          def split_svg(label, value, accent, icon, theme):
+              t = THEMES[theme]
+              H, R = 32, 8
+              label_w, value_w = tw(label, 13, True), tw(value, 13, True)
+              lw = 12 + 16 + 8 + label_w + 12
+              W = round(lw + 12 + value_w + 12, 1)
+              esc_l, esc_v = html.escape(label), html.escape(value)
+              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{esc_l}: {esc_v}">
+          <title>{esc_l}: {esc_v}</title>
+          <defs><clipPath id="c"><rect width="{W}" height="{H}" rx="{R}"/></clipPath></defs>
+          <g clip-path="url(#c)"><rect width="{W}" height="{H}" fill="{t['bg']}"/><rect width="{lw}" height="{H}" fill="{accent}" opacity=".14"/></g>
+          <rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="{R-.5}" fill="none" stroke="{t['border']}"/>
+          <g transform="translate(12 8) scale(.6667)" fill="none" stroke="{accent}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">{ICONS[icon]}</g>
+          <g font-family="{FONT}" font-size="13" font-weight="600">
+          <text x="36" y="21" fill="{t['muted']}" textLength="{label_w}" lengthAdjust="spacingAndGlyphs">{esc_l}</text>
+          <text x="{lw+12}" y="21" fill="{t['text']}" font-weight="700" textLength="{value_w}" lengthAdjust="spacingAndGlyphs">{esc_v}</text>
+          </g></svg>
+          '''
+
+
+          def pill_svg(caption, title, accent, icon, theme):
+              t = THEMES[theme]
+              H = 60
+              cap_w, title_w = tw(caption, 10.5, True, 1.2), tw(title, 20, True)
+              W = round(64 + max(cap_w, title_w) + 26, 1)
+              esc_c, esc_t = html.escape(caption), html.escape(title)
+              return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{esc_c.title()} {esc_t}">
+          <title>{esc_c.title()} {esc_t}</title>
+          <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="29" fill="{t['bg']}" stroke="{t['border']}" stroke-width="2"/>
+          <circle cx="32" cy="30" r="19" fill="{accent}" opacity=".15"/>
+          <g transform="translate(19.6 17.6) scale(1.0333)" fill="none" stroke="{accent}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{ICONS[icon]}</g>
+          <g font-family="{FONT}">
+          <text x="64" y="23" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="{t['muted']}" textLength="{cap_w}" lengthAdjust="spacingAndGlyphs">{esc_c}</text>
+          <text x="64" y="46" font-size="20" font-weight="800" fill="{t['text']}" textLength="{title_w}" lengthAdjust="spacingAndGlyphs">{esc_t}</text>
+          </g></svg>
+          '''
+
+
+          def accent(name, theme):
+              base = {
+                  "github": "#24292f" if theme == "light" else "#f0f6fc",
+                  "obtainium": "#8b5cf6", "support": "#f59e0b", "website": "#6d3fd9",
+                  "android": "#3ddc84", "release": "#8b5cf6", "downloads": "#3b82f6",
+                  "license": "#8b949e", "offline": "#10b981",
+              }
+              return base[name]
+
+
+          def fmt_count(n):
+              n = int(n)
+              if n >= 1_000_000:
+                  return f"{n/1_000_000:.1f}M".replace(".0M", "M")
+              if n >= 1000:
+                  return f"{n/1000:.1f}k".replace(".0k", "k")
+              return str(n)
+
+          # ===== Project settings (edit these for another app) =====
+          APP_NAME = "Pockeva"
+          TAGLINE = "Your money, in balance."
+          CHIPS = ["Offline-first", "Wallets", "Shopping list", "Loans", "Reports"]
+          ICON_FILE = "icon.png"
+          # =========================================================
+
+          import base64, io, json, os, subprocess
+
+          from PIL import Image
+
+
+          def banner_svg(dark):
+              if dark:
+                  bg1, bg2, glow, title, sub, chip_bg, chip_tx, chip_bd = "#0a0714", "#1a1036", "#8b5cf6", "#f5f3ff", "#c4b5fd", "rgba(255,255,255,.07)", "#ddd6fe", "rgba(255,255,255,.16)"
+              else:
+                  bg1, bg2, glow, title, sub, chip_bg, chip_tx, chip_bd = "#faf8ff", "#ece6ff", "#8b5cf6", "#1e1238", "#6d3fd9", "rgba(109,63,217,.08)", "#4c2a9e", "rgba(109,63,217,.28)"
+              img = Image.open(ICON_FILE).convert("RGBA").resize((220, 220), Image.LANCZOS)
+              buf = io.BytesIO()
+              img.save(buf, "PNG", optimize=True)
+              b64 = base64.b64encode(buf.getvalue()).decode()
+              chips, x = "", 330
+              for c in CHIPS:
+                  w = len(c) * 11.5 + 38
+                  chips += (f'<rect x="{x:.0f}" y="228" width="{w:.0f}" height="38" rx="19" fill="{chip_bg}" stroke="{chip_bd}"/>'
+                            f'<text x="{x + w / 2:.0f}" y="252" text-anchor="middle" font-size="16" font-weight="600" fill="{chip_tx}">{html.escape(c)}</text>')
+                  x += w + 12
+              return f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="{html.escape(APP_NAME)}. {html.escape(TAGLINE)}">
+            <defs>
+              <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{bg1}"/><stop offset="1" stop-color="{bg2}"/></linearGradient>
+              <radialGradient id="g1" cx="85%" cy="0%" r="60%"><stop offset="0" stop-color="{glow}" stop-opacity="{'.38' if dark else '.22'}"/><stop offset="1" stop-color="{glow}" stop-opacity="0"/></radialGradient>
+              <radialGradient id="g2" cx="0%" cy="100%" r="55%"><stop offset="0" stop-color="#d946ef" stop-opacity="{'.22' if dark else '.14'}"/><stop offset="1" stop-color="#d946ef" stop-opacity="0"/></radialGradient>
+              <clipPath id="ic"><rect x="70" y="70" width="180" height="180" rx="44"/></clipPath>
+            </defs>
+            <rect width="1280" height="320" rx="28" fill="url(#bg)"/>
+            <rect width="1280" height="320" rx="28" fill="url(#g1)"/>
+            <rect width="1280" height="320" rx="28" fill="url(#g2)"/>
+            <image x="70" y="70" width="180" height="180" clip-path="url(#ic)" xlink:href="data:image/png;base64,{b64}"/>
+            <rect x="70" y="70" width="180" height="180" rx="44" fill="none" stroke="{chip_bd}" stroke-width="2"/>
+            <g font-family="Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+              <text x="330" y="150" font-size="76" font-weight="800" fill="{title}" letter-spacing="-2">{html.escape(APP_NAME)}</text>
+              <text x="332" y="198" font-size="30" font-weight="500" fill="{sub}">{html.escape(TAGLINE)}</text>
+              {chips}
+            </g>
+          </svg>
+          '''
+
+
+          def latest_tag():
+              out = subprocess.run(["gh", "release", "view", "--repo", os.environ.get("GITHUB_REPOSITORY", ""), "--json", "tagName", "-q", ".tagName"],
+                                   capture_output=True, text=True)
+              return out.stdout.strip() if out.returncode == 0 and out.stdout.strip() else "none"
+
+
+          def write(path, text):
+              os.makedirs(os.path.dirname(path), exist_ok=True)
+              with open(path, "w", encoding="utf-8") as f:
+                  f.write(text)
+
+
+          tag = latest_tag()
+          for th in ("light", "dark"):
+              write(f"Assets/banner-{th}.svg", banner_svg(th == "dark"))
+              for name, cap, title, icon, acc in [
+                  ("get-github", "GET IT ON", "GitHub", "github", "github"),
+                  ("get-obtainium", "GET IT ON", "Obtainium", "obtainium", "obtainium"),
+                  ("website", "VISIT THE", "Website", "globe", "website"),
+                  ("support", "SUPPORT THE", "Developer", "coffee", "support"),
+              ]:
+                  write(f"Assets/badges/pill/{name}-{th}.svg", pill_svg(cap, title, accent(acc, th), icon, th))
+              for name, lab, val, icon, acc in [
+                  ("platform", "Platform", "Android", "android", "android"),
+                  ("release", "Release", tag, "tag", "release"),
+                  ("downloads", "Downloads", "\u2014", "download", "downloads"),
+                  ("license", "License", "Proprietary", "license", "license"),
+                  ("offline", "Mode", "Offline-first", "offline", "offline"),
+              ]:
+                  write(f"Assets/badges/split/{name}-{th}.svg", split_svg(lab, val, accent(acc, th), icon, th))
+          print("Generated Assets/banner-*.svg and Assets/badges/ (release badge:", tag + ")")
+          PY
+
+      - name: Commit images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -- Assets
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "docs: add README banner and badge images"
+            git push
+          fi
