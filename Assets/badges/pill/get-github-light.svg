@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="159.5" height="60" viewBox="0 0 159.5 60" role="img" aria-label="Get It On GitHub">
+<title>Get It On GitHub</title>
+<rect x="1" y="1" width="157.5" height="58" rx="29" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+<circle cx="32" cy="30" r="19" fill="#24292f" opacity=".15"/>
+<g transform="translate(19.6 17.6) scale(1.0333)" fill="none" stroke="#24292f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></g>
+<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<text x="64" y="23" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="#59636e" textLength="64.7" lengthAdjust="spacingAndGlyphs">GET IT ON</text>
+<text x="64" y="46" font-size="20" font-weight="800" fill="#1f2328" textLength="69.5" lengthAdjust="spacingAndGlyphs">GitHub</text>
+</g></svg>

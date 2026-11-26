@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="205.8" height="32" viewBox="0 0 205.8 32" role="img" aria-label="License: Proprietary">
+<title>License: Proprietary</title>
+<defs><clipPath id="c"><rect width="205.8" height="32" rx="8"/></clipPath></defs>
+<g clip-path="url(#c)"><rect width="205.8" height="32" fill="#ffffff"/><rect width="99.6" height="32" fill="#8b949e" opacity=".14"/></g>
+<rect x=".5" y=".5" width="204.8" height="31" rx="7.5" fill="none" stroke="#d0d7de"/>
+<g transform="translate(12 8) scale(.6667)" fill="none" stroke="#8b949e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></g>
+<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="600">
+<text x="36" y="21" fill="#59636e" textLength="51.6" lengthAdjust="spacingAndGlyphs">License</text>
+<text x="111.6" y="21" fill="#1f2328" font-weight="700" textLength="82.2" lengthAdjust="spacingAndGlyphs">Proprietary</text>
+</g></svg>

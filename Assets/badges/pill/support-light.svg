@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192.9" height="60" viewBox="0 0 192.9 60" role="img" aria-label="Support The Developer">
+<title>Support The Developer</title>
+<rect x="1" y="1" width="190.9" height="58" rx="29" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+<circle cx="32" cy="30" r="19" fill="#f59e0b" opacity=".15"/>
+<g transform="translate(19.6 17.6) scale(1.0333)" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 010 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><path d="M6 2v2M10 2v2M14 2v2"/></g>
+<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<text x="64" y="23" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="#59636e" textLength="88.7" lengthAdjust="spacingAndGlyphs">SUPPORT THE</text>
+<text x="64" y="46" font-size="20" font-weight="800" fill="#1f2328" textLength="102.9" lengthAdjust="spacingAndGlyphs">Developer</text>
+</g></svg>

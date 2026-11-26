@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="187.2" height="32" viewBox="0 0 187.2 32" role="img" aria-label="Platform: Android">
+<title>Platform: Android</title>
+<defs><clipPath id="c"><rect width="187.2" height="32" rx="8"/></clipPath></defs>
+<g clip-path="url(#c)"><rect width="187.2" height="32" fill="#0d1117"/><rect width="111.6" height="32" fill="#3ddc84" opacity=".14"/></g>
+<rect x=".5" y=".5" width="186.2" height="31" rx="7.5" fill="none" stroke="#30363d"/>
+<g transform="translate(12 8) scale(.6667)" fill="none" stroke="#3ddc84" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17a7 7 0 0114 0z"/><path d="M8.5 7.2L7 5M15.5 7.2L17 5"/><path d="M9.5 12.5h.01M14.5 12.5h.01"/></g>
+<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="600">
+<text x="36" y="21" fill="#9198a1" textLength="63.6" lengthAdjust="spacingAndGlyphs">Platform</text>
+<text x="123.6" y="21" fill="#f0f6fc" font-weight="700" textLength="51.6" lengthAdjust="spacingAndGlyphs">Android</text>
+</g></svg>

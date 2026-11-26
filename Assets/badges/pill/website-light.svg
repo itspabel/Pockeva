@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="174.1" height="60" viewBox="0 0 174.1 60" role="img" aria-label="Visit The Website">
+<title>Visit The Website</title>
+<rect x="1" y="1" width="172.1" height="58" rx="29" fill="#ffffff" stroke="#d0d7de" stroke-width="2"/>
+<circle cx="32" cy="30" r="19" fill="#6d3fd9" opacity=".15"/>
+<g transform="translate(19.6 17.6) scale(1.0333)" fill="none" stroke="#6d3fd9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></g>
+<g font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<text x="64" y="23" font-size="10.5" font-weight="600" letter-spacing="1.2" fill="#59636e" textLength="64.7" lengthAdjust="spacingAndGlyphs">VISIT THE</text>
+<text x="64" y="46" font-size="20" font-weight="800" fill="#1f2328" textLength="84.1" lengthAdjust="spacingAndGlyphs">Website</text>
+</g></svg>
