@@ -7,17 +7,17 @@
   <h3>An offline-first personal finance app for Android.</h3>
 
   <p>
-    <a href="https://github.com/itspabel/Pockeva/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-github-dark.svg"><img alt="Get it on GitHub" src="Assets/badges/pill/get-github-light.svg" height="60"></picture></a>
-    <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/itspabel/Pockeva/"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-obtainium-dark.svg"><img alt="Get it on Obtainium" src="Assets/badges/pill/get-obtainium-light.svg" height="60"></picture></a>
-    <a href="https://pockeva.asf.run"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/website-dark.svg"><img alt="Visit the Pockeva website" src="Assets/badges/pill/website-light.svg" height="60"></picture></a>
-    <a href="https://itspabel.github.io/Donate"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/support-dark.svg"><img alt="Support the developer" src="Assets/badges/pill/support-light.svg" height="60"></picture></a>
+    <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Download Pockeva" src="https://img.shields.io/badge/Download-Latest_Release-8B5CF6?style=for-the-badge&logo=github&logoColor=white"></a>
+    <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/itspabel/Pockeva/"><img alt="Get it on Obtainium" src="https://img.shields.io/badge/Get_it_on-Obtainium-6D28D9?style=for-the-badge&logo=android&logoColor=white"></a>
+    <a href="https://pockeva.asf.run"><img alt="Pockeva website" src="https://img.shields.io/badge/Website-pockeva.asf.run-4F46E5?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
+    <a href="https://itspabel.github.io/Donate"><img alt="Support the developer" src="https://img.shields.io/badge/Support-Buy_me_a_coffee-F59E0B?style=for-the-badge&logo=buymeacoffee&logoColor=white"></a>
   </p>
   <p>
-    <picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/platform-dark.svg"><img alt="Platform: Android" src="Assets/badges/split/platform-light.svg" height="32"></picture>
-    <a href="https://github.com/itspabel/Pockeva/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/release-dark.svg"><img alt="Latest release" src="Assets/badges/split/release-light.svg" height="32"></picture></a>
-    <a href="https://github.com/itspabel/Pockeva/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/downloads-dark.svg"><img alt="Downloads" src="Assets/badges/split/downloads-light.svg" height="32"></picture></a>
-    <a href="#copyright--license"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/license-dark.svg"><img alt="License: Proprietary" src="Assets/badges/split/license-light.svg" height="32"></picture></a>
-    <picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/split/offline-dark.svg"><img alt="Offline-first" src="Assets/badges/split/offline-light.svg" height="32"></picture>
+    <img alt="Platform: Android" src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white">
+    <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/Release-v1.1.0-8B5CF6?style=flat-square"></a>
+    <a href="https://github.com/itspabel/Pockeva/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/itspabel/Pockeva/total?style=flat-square&color=6D3FD9&label=Downloads"></a>
+    <a href="#copyright--license"><img alt="License: Proprietary" src="https://img.shields.io/badge/License-Proprietary-555555?style=flat-square"></a>
+    <img alt="Works offline" src="https://img.shields.io/badge/Works-Offline-10B981?style=flat-square">
   </p>
 
   <p>
@@ -120,15 +120,15 @@ You decide where backups go, you can export reports as PDF, and you can wipe eve
 ## 🆕 What's New
 
 <!-- release-notes:start -->
-### v1.1.0 (2026-11-24)
+### v1.1.0
 
 - Added live confirmation preview dialogs with short Confirm actions across Wallet & Card creation/editing, Transactions, Transfers, Conversions, Withdrawals, and Loans.
-- Upgraded Success dialogs with context-aware animated vector hero badges, operation-specific detail summaries, and live Before -> After wallet balance cards. 
-- Enhanced Financial Reports with an Income vs Expense Bar/Trend chart, interactive Savings Rate progress gauge, and expanded daily & monthly cashflow highlights. 
+- Upgraded Success dialogs with context-aware animated vector hero badges, operation-specific detail summaries, and live Before -> After wallet balance cards.
+- Enhanced Financial Reports with an Income vs Expense Bar/Trend chart, interactive Savings Rate progress gauge, and expanded daily & monthly cashflow highlights.
 - Added a Repeat action in Transaction Details to quickly prefill a new entry with today's date, plus an Exit Pockeva confirmation dialog on Home Back navigation.
 - Added a Share App button in Settings sharing itspabel.github.io/Pockeva, updated the Support card with a Coffee icon, and ensured crisp vector icons across all alerts.
 
-[View full release](https://github.com/itspabel/Pockeva/releases/tag/v1.1.0)
+[View full release](https://github.com/itspabel/Pockeva/releases/latest)
 <!-- release-notes:end -->
 
 Older versions are listed in [release-notes.md](release-notes.md).
@@ -138,8 +138,8 @@ Older versions are listed in [release-notes.md](release-notes.md).
 ## 📥 Download
 
 <div align="center">
-  <a href="https://github.com/itspabel/Pockeva/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-github-dark.svg"><img alt="Get it on GitHub" src="Assets/badges/pill/get-github-light.svg" height="60"></picture></a>
-  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/itspabel/Pockeva/"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/get-obtainium-dark.svg"><img alt="Get it on Obtainium" src="Assets/badges/pill/get-obtainium-light.svg" height="60"></picture></a>
+  <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Get it on GitHub Releases" src="https://img.shields.io/badge/Get_it_on-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white"></a>
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/itspabel/Pockeva/"><img alt="Get it on Obtainium" src="https://img.shields.io/badge/Get_it_on-Obtainium-6D28D9?style=for-the-badge&logo=android&logoColor=white"></a>
 </div>
 
 #### Which APK should I download?
@@ -174,7 +174,7 @@ Only install APK files from sources you trust. Official downloads are published 
 
 Pockeva is free to download and is built independently. If it helps you stay in balance, please consider supporting the developer so development can keep going.
 
-<a href="https://itspabel.github.io/Donate"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/badges/pill/support-dark.svg"><img alt="Support the developer" src="Assets/badges/pill/support-light.svg" height="60"></picture></a>
+<a href="https://itspabel.github.io/Donate"><img alt="Support the developer" src="https://img.shields.io/badge/Support-the_developer-F59E0B?style=for-the-badge&logo=buymeacoffee&logoColor=white"></a>
 
 ---
 
