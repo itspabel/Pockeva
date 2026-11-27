@@ -14,7 +14,7 @@
   </p>
   <p>
     <img alt="Platform: Android" src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white">
-    <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/Release-v1.1.0-8B5CF6?style=flat-square"></a>
+    <a href="https://github.com/itspabel/Pockeva/releases/latest"><img alt="Latest release" src="https://img.shields.io/badge/Release-v1.1.1-8B5CF6?style=flat-square"></a>
     <a href="https://github.com/itspabel/Pockeva/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/itspabel/Pockeva/total?style=flat-square&color=6D3FD9&label=Downloads"></a>
     <a href="#copyright--license"><img alt="License: Proprietary" src="https://img.shields.io/badge/License-Proprietary-555555?style=flat-square"></a>
     <img alt="Works offline" src="https://img.shields.io/badge/Works-Offline-10B981?style=flat-square">
@@ -120,15 +120,16 @@ You decide where backups go, you can export reports as PDF, and you can wipe eve
 ## 🆕 What's New
 
 <!-- release-notes:start -->
-### v1.1.0
+### v1.1.1 (2026-11-27)
 
-- Added live confirmation preview dialogs with short Confirm actions across Wallet & Card creation/editing, Transactions, Transfers, Conversions, Withdrawals, and Loans.
-- Upgraded Success dialogs with context-aware animated vector hero badges, operation-specific detail summaries, and live Before -> After wallet balance cards.
-- Enhanced Financial Reports with an Income vs Expense Bar/Trend chart, interactive Savings Rate progress gauge, and expanded daily & monthly cashflow highlights.
-- Added a Repeat action in Transaction Details to quickly prefill a new entry with today's date, plus an Exit Pockeva confirmation dialog on Home Back navigation.
-- Added a Share App button in Settings sharing itspabel.github.io/Pockeva, updated the Support card with a Coffee icon, and ensured crisp vector icons across all alerts.
+- Added a checkout-style Card Expiry Date (MM/YY) field beside Card Last 4 Digits (placed above Card Currency & Balance) with automatic slash formatting, 01-12 month validation, and live card preview display. 
+- Renamed Card Description to Bank Name / Provider (displayed as card title like 'Prime Bank Card'), kept Card Label exclusive to Cards, and ensured Wallets display their own provider/bank name.
+- Added optional Bank Account binding on Cards: Debit cards deduct/credit the linked bank balance on spend/income, while Credit cards show a Pay Bill action to settle card balances from any Bank or Wallet.
+- Upgraded Loans & Lendings with an active Early Settlement flow (pre-filled remaining balance with optional Discount and Settlement Fee), plus confirmation and success summary dialogs for repayments and settlements.
+- Added daytime WorkManager reminders for loans due within 2-3 days (auto-stopping once settled) and app updates with category-specific icons, plus runtime Android 13+ notification permission prompting, 24-hour 'Later' snooze, and a 'Don't show again' dialog toggle.
+- Fixed Wallets & Cards sheet dismissal freeze (clean sheetState hide, internal BackHandler, and focus teardown), top-bar back hit target, and biometric navigation preservation.
 
-[View full release](https://github.com/itspabel/Pockeva/releases/latest)
+[View full release](https://github.com/itspabel/Pockeva/releases/tag/v1.1.1)
 <!-- release-notes:end -->
 
 Older versions are listed in [release-notes.md](release-notes.md).
@@ -148,9 +149,9 @@ Each release has three APKs.
 
 | Your device | File |
 | :--- | :--- |
-| Any device (recommended, works everywhere) | `Pockeva-v1.1.0-universal.apk` |
-| Most modern phones (64-bit, `arm64-v8a`), smaller download | `Pockeva-v1.1.0-arm64-v8a.apk` |
-| Older 32-bit phones (`armeabi-v7a`) | `Pockeva-v1.1.0-armeabi-v7a.apk` |
+| Any device (recommended, works everywhere) | `Pockeva-v1.1.1-universal.apk` |
+| Most modern phones (64-bit, `arm64-v8a`), smaller download | `Pockeva-v1.1.1-arm64-v8a.apk` |
+| Older 32-bit phones (`armeabi-v7a`) | `Pockeva-v1.1.1-armeabi-v7a.apk` |
 
 Not sure which one to pick? Choose the **universal** APK.
 
