@@ -15,7 +15,7 @@ Always update to the newest release before reporting a security issue.
 
 **Do not report security vulnerabilities through public GitHub issues.**
 
-Report privately through [GitHub Security Advisories](https://github.com/itspabel/Pockeva/security/advisories/new). If you cannot use that form, email <hello@pabel.pro.bd>.
+Report privately through [GitHub Security Advisories](https://github.com/itspabel/Pockeva/security/advisories/new). If you cannot use that form, email <hello@pabel.dev>.
 
 Please include:
 
