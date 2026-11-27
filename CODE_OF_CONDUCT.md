@@ -22,4 +22,4 @@ We want Pockeva's issues and discussions to be a friendly, respectful place for 
 
 The maintainer may edit or remove comments, close or lock issues, and block people who do not follow these rules.
 
-To report a problem, email <hello@pabel.pro.bd>. Reports are handled privately.
+To report a problem, email <hello@pabel.dev>. Reports are handled privately.
